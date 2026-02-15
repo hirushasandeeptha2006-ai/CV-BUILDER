@@ -1,0 +1,244 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@500;600;700;800&display=swap');
+
+:root {
+    --primary: #ef4444; /* Default Red */
+    --primary-light: #fee2e2;
+    --dark: #1a1a1a;
+    --text: #334155;
+    --bg-light: #f8fafc;
+    --border: #e2e8f0;
+}
+
+body {
+    font-family: 'Inter', sans-serif;
+    color: var(--text);
+    background-color: #f1f5f9;
+}
+
+h1, h2, h3, h4, .font-heading {
+    font-family: 'Poppins', sans-serif;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+}
+
+::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #94a3b8;
+}
+
+/* Tab Navigation */
+.sidebar-tabs {
+    display: flex;
+    gap: 0.5rem;
+    overflow-x: auto;
+    padding-bottom: 0.5rem;
+    margin-bottom: 1.5rem;
+    border-bottom: 1px solid var(--border);
+}
+
+.tab-btn {
+    padding: 0.5rem 1rem;
+    border-radius: 0.75rem;
+    font-size: 0.85rem;
+    font-weight: 600;
+    white-space: nowrap;
+    transition: all 0.2s;
+    color: #64748b;
+    background: transparent;
+    border: 1px solid transparent;
+}
+
+.tab-btn:hover {
+    background-color: #f1f5f9;
+    color: var(--dark);
+}
+
+.tab-btn.active {
+    background-color: var(--primary);
+    color: white;
+    box-shadow: 0 4px 12px -2px rgba(0,0,0,0.1);
+}
+
+/* Input Fields */
+.input-group {
+    margin-bottom: 1rem;
+}
+
+.input-label {
+    display: block;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: #64748b; /* slate-500 */
+    margin-bottom: 0.4rem;
+    letter-spacing: 0.05em;
+}
+
+.form-input {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    background-color: #f8fafc;
+    border: 1px solid var(--border);
+    border-radius: 0.75rem;
+    font-size: 0.9rem;
+    color: var(--dark);
+    transition: all 0.2s;
+}
+
+.form-input:focus {
+    background-color: white;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px var(--primary-light);
+    outline: none;
+}
+
+/* A4 Page Preview */
+.a4-wrapper {
+    perspective: 1000px;
+}
+
+.a4-page {
+    width: 210mm;
+    min-height: 297mm;
+    background: white;
+    margin: 0 auto;
+    box-shadow: 0 20px 50px -12px rgba(0, 0, 0, 0.15);
+    position: relative;
+    transform-origin: top center;
+    transition: transform 0.3s ease;
+}
+
+/* Mobile Responsive Adjustments */
+@media (max-width: 1024px) {
+    .a4-page {
+        transform: scale(0.6);
+        margin-bottom: -100mm;
+    }
+}
+
+@media (max-width: 768px) {
+    .a4-page {
+        /* Mobile Scale Adjusted */
+        transform: scale(0.48); 
+        margin-top: 2rem;
+        margin-bottom: -140mm; /* Prevent large whitespace below */
+        box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.2);
+    }
+    
+    .sidebar-tabs {
+        padding: 0.5rem;
+        background: white;
+        margin: 0 -1.5rem 1.5rem -1.5rem;
+        border-bottom: 1px solid var(--border);
+    }
+
+    /* Hide scrollbar in mobile preview to look cleaner */
+    .a4-container {
+        overflow-x: hidden !important;
+    }
+}
+
+/* Print Styles */
+@media print {
+    @page { margin: 0; size: auto; }
+    body, html { background: white; height: auto; overflow: visible; }
+    .no-print, nav, .sidebar-container, .tools-panel, .mobile-fab { display: none !important; }
+    #app { display: block !important; height: auto !important; overflow: visible !important; }
+    .a4-container { padding: 0 !important; margin: 0 !important; display: block !important; width: 100% !important; background: white !important; }
+    .a4-page { transform: none !important; box-shadow: none !important; margin: 0 !important; width: 100% !important; height: auto !important; page-break-after: always; }
+}
+
+
+/* =========================================
+   NEW: TEMPLATE STYLES (Added dynamically)
+   ========================================= */
+
+/* Template: Modern Dark Header */
+.template-modern header {
+    background-color: var(--dark);
+    padding: 2.5rem;
+    border-radius: 0.5rem;
+    border-bottom: none !important;
+}
+.template-modern header h1 {
+    color: white !important;
+}
+.template-modern header .contact-details {
+    color: #e2e8f0 !important; /* Lighter text for dark bg */
+}
+.template-modern header img {
+    border-color: var(--primary) !important;
+}
+
+/* Template: Minimal Centered */
+.template-minimal header {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    border-bottom: 2px solid var(--primary) !important;
+}
+.template-minimal header .flex-grow {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+}
+.template-minimal header .contact-details {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 1.5rem;
+}
+
+/* =========================================
+   TEXT OVERFLOW & LINE BREAK FIX
+   
+   ========================================= */
+
+/* 1. long words (ex:links) page stop text overflow  */
+.a4-page {
+    overflow-wrap: break-word;
+    word-break: break-word;
+}
+
+/* 2. Profile, Experience ,projects line brake using enter key */
+.a4-page p {
+    white-space: pre-line !important;
+}
+
+/* 3. long link in contact detail  */
+.contact-details div, 
+.a4-page span,
+.a4-page a {
+    overflow-wrap: anywhere;
+}
+
+/* =========================================
+   LAPTOP SCREEN FIX 
+   ========================================= */
+@media (max-width: 1440px) and (min-width: 1025px) {
+    .a4-container {
+      
+        justify-content: flex-start !important;
+        padding: 2rem !important;
+        overflow-x: auto !important;
+    }
+    .a4-page {
+       
+        transform: scale(0.85);
+        margin: 0 auto !important; 
+        margin-bottom: -40mm !important;
+    }
+}

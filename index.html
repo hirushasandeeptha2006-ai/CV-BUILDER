@@ -1,0 +1,723 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pro CV Builder | Enhanced Edition</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <link rel="stylesheet" href="style.css">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: 'var(--primary-light)',
+                            100: '#fee2e2',
+                            500: 'var(--primary)',
+                            600: 'var(--primary)', // mapped to primary variable
+                            700: '#b91c1c',
+                            900: '#7f1d1d',
+                        },
+                        dark: {
+                            DEFAULT: '#1a1a1a',
+                            light: '#404040'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+
+<body class="bg-slate-100 text-slate-800 md:h-screen md:overflow-hidden flex flex-col min-h-screen">
+
+    <nav
+        class="bg-white border-b border-slate-200 h-16 flex items-center justify-between px-6 shadow-sm z-20 no-print shrink-0">
+        <div class="flex items-center gap-3">
+            <div
+                class="w-10 h-10 bg-brand-600 rounded-xl flex items-center justify-center text-white shadow-lg transition-colors duration-300">
+                <i class="fa-solid fa-file-invoice text-lg"></i>
+            </div>
+            <div>
+                <span class="text-xl font-extrabold text-dark tracking-tight leading-none block">CV<span
+                        class="text-brand-600">Master</span></span>
+                <span
+                    class="text-[10px] uppercase font-bold text-slate-400 tracking-widest leading-none block mt-0.5">Professional
+                    Builder</span>
+            </div>
+        </div>
+
+        <div class="flex items-center gap-4">
+            <a href="https://github.com" target="_blank" class="text-slate-400 hover:text-dark transition"><i
+                    class="fa-brands fa-github text-xl"></i></a>
+            <button onclick="window.print()"
+                class="bg-dark text-white px-5 py-2 rounded-lg font-bold text-sm hover:bg-brand-600 transition shadow-lg flex items-center gap-2">
+                <i class="fa-solid fa-download"></i> <span class="hidden sm:inline">Export PDF</span>
+            </button>
+        </div>
+    </nav>
+
+    <div id="app" class="flex flex-col md:flex-row flex-1 overflow-hidden relative">
+
+        <button v-if="isMobile" @click="toggleMobileView" 
+            class="mobile-fab fixed bottom-6 right-6 z-50 bg-brand-600 text-white w-14 h-14 rounded-full shadow-2xl flex items-center justify-center text-xl transition transform active:scale-95 border-4 border-white md:hidden hover:bg-brand-700">
+            <i :class="showPreview ? 'fa-solid fa-pen' : 'fa-solid fa-eye'"></i>
+        </button>
+
+        <div v-show="!isMobile || !showPreview"
+             class="w-full md:w-[480px] bg-white border-r border-slate-200 flex flex-col no-print shadow-2xl z-10 shrink-0 h-full overflow-hidden">
+
+            <div class="px-6 pt-6 bg-white shrink-0 z-20">
+                <div class="sidebar-tabs">
+                    <button @click="activeTab = 'personal'"
+                        :class="['tab-btn', activeTab === 'personal' ? 'active' : '']">
+                        <i class="fa-solid fa-user mr-1"></i> Personal
+                    </button>
+                    <button @click="activeTab = 'experience'"
+                        :class="['tab-btn', activeTab === 'experience' ? 'active' : '']">
+                        <i class="fa-solid fa-briefcase mr-1"></i> Work
+                    </button>
+                    <button @click="activeTab = 'education'"
+                        :class="['tab-btn', activeTab === 'education' ? 'active' : '']">
+                        <i class="fa-solid fa-graduation-cap mr-1"></i> Education
+                    </button>
+                    <button @click="activeTab = 'projects'"
+                        :class="['tab-btn', activeTab === 'projects' ? 'active' : '']">
+                        <i class="fa-solid fa-code mr-1"></i> Projects
+                    </button>
+                    <button @click="activeTab = 'skills'" :class="['tab-btn', activeTab === 'skills' ? 'active' : '']">
+                        <i class="fa-solid fa-wand-magic-sparkles mr-1"></i> Skills
+                    </button>
+                    <button @click="activeTab = 'style'" :class="['tab-btn', activeTab === 'style' ? 'active' : '']">
+                        <i class="fa-solid fa-palette mr-1"></i> Style
+                    </button>
+                </div>
+            </div>
+
+            <div class="flex-1 overflow-y-auto px-6 pb-20 custom-scrollbar">
+
+                <div v-if="activeTab === 'personal'" class="space-y-6 fade-in">
+                    <div class="text-center mb-6">"
+                        <div class="relative inline-block group">
+                            <div
+                                class="w-28 h-28 rounded-full overflow-hidden border-4 border-slate-100 shadow-inner mx-auto bg-slate-50 flex items-center justify-center text-slate-300">
+                                <img v-if="cv.photo" :src="cv.photo" class="w-full h-full object-cover">
+                                <i v-else class="fa-solid fa-user text-4xl"></i>
+                            </div>
+                            <label
+                                class="absolute bottom-1 right-1 bg-dark hover:bg-brand-600 text-white w-9 h-9 rounded-full flex items-center justify-center cursor-pointer shadow-lg transition-all transform hover:scale-110">
+                                <i class="fa-solid fa-camera text-xs"></i>
+                                <input type="file" @change="handleImageUpload" accept="image/*" class="hidden">
+                            </label>
+                        </div>
+                        <p class="text-xs text-slate-400 mt-3 font-medium">Click icon to upload photo</p>
+                    </div>
+
+                    <div class="space-y-4">
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <label class="input-label">Full Name</label>
+                                <input v-model="cv.name" class="form-input" placeholder="e.g. John Doe">
+                            </div>
+                            <div>
+                                <label class="input-label">Job Title</label>
+                                <input v-model="cv.title" class="form-input" placeholder="e.g. Product Designer">
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="input-label">Professional Summary</label>
+                            <textarea v-model="cv.summary" rows="4" class="form-input"
+                                placeholder="Brief overview of your career..."></textarea>
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <label class="input-label">Email</label>
+                                <input v-model="cv.email" class="form-input" placeholder="john@example.com">
+                            </div>
+                            <div>
+                                <label class="input-label">Phone</label>
+                                <input v-model="cv.phone" class="form-input" placeholder="+1 234 567 890">
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="input-label">Location</label>
+                            <input v-model="cv.location" class="form-input" placeholder="New York, USA">
+                        </div>
+
+                        <div class="pt-4 border-t border-slate-100">
+                            <label class="input-label mb-3 text-brand-600">Social Profiles</label>
+                            <div class="space-y-3">
+                                <div class="relative">
+                                    <i class="fa-brands fa-linkedin absolute left-3 top-3.5 text-slate-400"></i>
+                                    <input v-model="cv.linkedin" class="form-input pl-9"
+                                        placeholder="LinkedIn Profile URL">
+                                </div>
+                                <div class="relative">
+                                    <i class="fa-brands fa-github absolute left-3 top-3.5 text-slate-400"></i>
+                                    <input v-model="cv.github" class="form-input pl-9" placeholder="GitHub Profile URL">
+                                </div>
+                                <div class="relative">
+                                    <i class="fa-solid fa-globe absolute left-3 top-3.5 text-slate-400"></i>
+                                    <input v-model="cv.website" class="form-input pl-9"
+                                        placeholder="Portfolio Website URL">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div v-if="activeTab === 'experience'" class="space-y-6 fade-in">
+                    <div class="flex justify-between items-center mb-4">
+                        <h3 class="font-bold text-dark text-lg">Work History</h3>
+                        <button
+                            @click="cv.experience.push({ company: '', position: '', start: '', end: '', description: '' })"
+                            class="text-xs bg-brand-50 text-brand-600 px-3 py-1.5 rounded-full font-bold hover:bg-brand-100 transition">
+                            <i class="fa-solid fa-plus mr-1"></i> Add Position
+                        </button>
+                    </div>
+
+                    <div v-for="(job, index) in cv.experience" :key="index"
+                        class="bg-white border border-slate-200 rounded-xl p-5 relative group hover:border-brand-200 transition-colors shadow-sm">
+                        <button @click="cv.experience.splice(index, 1)"
+                            class="absolute top-3 right-3 text-slate-300 hover:text-red-500 transition"><i
+                                class="fa-solid fa-trash-can"></i></button>
+
+                        <div class="grid grid-cols-2 gap-3 mb-3">
+                            <div>
+                                <label class="text-[10px] uppercase font-bold text-slate-400 mb-1 block">Company</label>
+                                <input v-model="job.company"
+                                    class="w-full text-sm font-bold bg-transparent outline-none border-b border-transparent focus:border-brand-500 transition text-dark"
+                                    placeholder="Company Name">
+                            </div>
+                            <div>
+                                <label
+                                    class="text-[10px] uppercase font-bold text-slate-400 mb-1 block">Position</label>
+                                <input v-model="job.position"
+                                    class="w-full text-sm font-bold text-brand-600 bg-transparent outline-none border-b border-transparent focus:border-brand-500 transition"
+                                    placeholder="Job Title">
+                            </div>
+                        </div>
+
+                        <div class="flex gap-2 text-xs mb-3">
+                            <input v-model="job.start"
+                                class="w-20 bg-slate-50 border border-slate-200 rounded px-2 py-1" placeholder="Start">
+                            <span class="self-center text-slate-300">-</span>
+                            <input v-model="job.end" class="w-20 bg-slate-50 border border-slate-200 rounded px-2 py-1"
+                                placeholder="End">
+                        </div>
+
+                        <textarea v-model="job.description" rows="3"
+                            class="w-full text-xs text-slate-600 bg-slate-50 p-2 rounded border border-slate-100 focus:bg-white focus:border-brand-200 outline-none transition"
+                            placeholder="Describe your responsibilities and achievements..."></textarea>
+                    </div>
+                </div>
+
+                <div v-if="activeTab === 'education'" class="space-y-6 fade-in">
+                    <div class="flex justify-between items-center mb-4">
+                        <h3 class="font-bold text-dark text-lg">Education</h3>
+                        <button @click="cv.education.push({ institution: '', degree: '', start: '', end: '' })"
+                            class="text-xs bg-brand-50 text-brand-600 px-3 py-1.5 rounded-full font-bold hover:bg-brand-100 transition">
+                            <i class="fa-solid fa-plus mr-1"></i> Add School
+                        </button>
+                    </div>
+
+                    <div v-for="(edu, index) in cv.education" :key="index"
+                        class="bg-white border border-slate-200 rounded-xl p-5 relative group hover:border-brand-200 transition-colors shadow-sm">
+                        <button @click="cv.education.splice(index, 1)"
+                            class="absolute top-3 right-3 text-slate-300 hover:text-red-500 transition"><i
+                                class="fa-solid fa-trash-can"></i></button>
+
+                        <div class="mb-3">
+                            <label class="text-[10px] uppercase font-bold text-slate-400 mb-1 block">Institution</label>
+                            <input v-model="edu.institution"
+                                class="w-full text-sm font-bold text-dark bg-transparent outline-none border-b border-transparent focus:border-brand-500 transition"
+                                placeholder="University / School">
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="text-[10px] uppercase font-bold text-slate-400 mb-1 block">Degree</label>
+                            <input v-model="edu.degree"
+                                class="w-full text-sm font-bold text-brand-600 bg-transparent outline-none border-b border-transparent focus:border-brand-500 transition"
+                                placeholder="Degree / Certificate">
+                        </div>
+
+                        <div class="flex gap-2 text-xs">
+                            <input v-model="edu.start"
+                                class="w-20 bg-slate-50 border border-slate-200 rounded px-2 py-1" placeholder="Start">
+                            <span class="self-center text-slate-300">-</span>
+                            <input v-model="edu.end" class="w-20 bg-slate-50 border border-slate-200 rounded px-2 py-1"
+                                placeholder="End">
+                        </div>
+                    </div>
+                </div>
+
+                <div v-if="activeTab === 'projects'" class="space-y-8 fade-in">
+
+                    <div>
+                        <div class="flex justify-between items-center mb-4">
+                            <h3 class="font-bold text-dark text-lg">Key Projects</h3>
+                            <button @click="cv.projects.push({ name: '', link: '', description: '' })"
+                                class="text-xs bg-brand-50 text-brand-600 px-3 py-1.5 rounded-full font-bold hover:bg-brand-100 transition">
+                                <i class="fa-solid fa-plus mr-1"></i> Add Project
+                            </button>
+                        </div>
+
+                        <div class="space-y-4">
+                            <div v-for="(proj, index) in cv.projects" :key="index"
+                                class="bg-white border border-slate-200 rounded-xl p-5 relative group hover:border-brand-200 transition-colors shadow-sm">
+                                <button @click="cv.projects.splice(index, 1)"
+                                    class="absolute top-3 right-3 text-slate-300 hover:text-red-500 transition"><i
+                                        class="fa-solid fa-trash-can"></i></button>
+
+                                <div class="grid grid-cols-2 gap-3 mb-3">
+                                    <input v-model="proj.name"
+                                        class="font-bold text-dark text-sm bg-transparent outline-none border-b border-transparent focus:border-brand-500"
+                                        placeholder="Project Name">
+                                    <input v-model="proj.link"
+                                        class="text-xs text-brand-600 bg-transparent outline-none border-b border-transparent focus:border-brand-500 text-right"
+                                        placeholder="Project Link">
+                                </div>
+                                <textarea v-model="proj.description" rows="2"
+                                    class="w-full text-xs text-slate-600 bg-slate-50 p-2 rounded border border-slate-100 focus:bg-white focus:border-brand-200 outline-none transition"
+                                    placeholder="Project details..."></textarea>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="pt-6 border-t border-slate-100">
+                        <div class="flex justify-between items-center mb-4">
+                            <h3 class="font-bold text-dark text-lg">Certifications</h3>
+                            <button @click="cv.certifications.push({ name: '', issuer: '', year: '' })"
+                                class="text-xs bg-brand-50 text-brand-600 px-3 py-1.5 rounded-full font-bold hover:bg-brand-100 transition">
+                                <i class="fa-solid fa-plus mr-1"></i> Add
+                            </button>
+                        </div>
+
+                        <div class="space-y-3">
+                            <div v-for="(cert, index) in cv.certifications" :key="index"
+                                class="bg-white border border-slate-200 rounded-lg p-3 relative flex items-center gap-3">
+                                <button @click="cv.certifications.splice(index, 1)"
+                                    class="absolute top-2 right-2 text-slate-300 hover:text-red-500 transition"><i
+                                        class="fa-solid fa-times text-xs"></i></button>
+                                <div class="flex-1">
+                                    <input v-model="cert.name"
+                                        class="w-full font-bold text-xs text-dark bg-transparent outline-none mb-1"
+                                        placeholder="Certificate Name">
+                                    <div class="flex gap-2">
+                                        <input v-model="cert.issuer"
+                                            class="text-[10px] text-slate-500 bg-transparent outline-none w-1/2"
+                                            placeholder="Issuer">
+                                        <input v-model="cert.year"
+                                            class="text-[10px] text-slate-400 bg-transparent outline-none w-1/4"
+                                            placeholder="Year">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div v-if="activeTab === 'skills'" class="space-y-6 fade-in">
+                    <div>
+                        <label class="input-label mb-2">Technical Skills (Comma Separated)</label>
+                        <textarea v-model="skillsInput" @input="updateSkills" rows="4" class="form-input text-sm"
+                            placeholder="React, Python, Design..."></textarea>
+                        <div class="flex flex-wrap gap-2 mt-3">
+                            <span v-for="skill in cv.skills"
+                                class="bg-brand-50 text-brand-700 px-2 py-1 rounded text-[10px] font-bold uppercase tracking-wider border border-brand-100">
+                                {{ skill }}
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="pt-6 border-t border-slate-100">
+                        <div class="flex justify-between items-center mb-4">
+                            <h3 class="font-bold text-dark text-lg">Languages</h3>
+                            <button @click="cv.languages.push({ language: '', proficiency: '' })"
+                                class="text-xs bg-brand-50 text-brand-600 px-3 py-1.5 rounded-full font-bold hover:bg-brand-100 transition">
+                                <i class="fa-solid fa-plus mr-1"></i> Add
+                            </button>
+                        </div>
+                        <div class="grid grid-cols-1 gap-3">
+                            <div v-for="(lang, index) in cv.languages" :key="index" class="flex gap-2 items-center">
+                                <input v-model="lang.language" class="form-input py-2 text-xs font-bold"
+                                    placeholder="Language">
+                                <select v-model="lang.proficiency" class="form-input py-2 text-xs w-32">
+                                    <option value="" disabled selected>Level</option>
+                                    <option>Native</option>
+                                    <option>Fluent</option>
+                                    <option>Intermediate</option>
+                                    <option>Basic</option>
+                                </select>
+                                <button @click="cv.languages.splice(index, 1)"
+                                    class="text-slate-300 hover:text-red-500"><i
+                                        class="fa-solid fa-circle-xmark"></i></button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div v-if="activeTab === 'style'" class="space-y-6 fade-in">
+                    <div>
+                        <h3 class="font-bold text-dark text-lg mb-4">Choose Template</h3>
+                        <div class="grid grid-cols-1 gap-3">
+                            <button @click="currentTemplate = 'template-classic'" 
+                                class="flex items-center p-3 rounded-xl border-2 transition-all text-left"
+                                :class="currentTemplate === 'template-classic' ? 'border-brand-600 bg-brand-50' : 'border-slate-200 hover:border-brand-200'">
+                                <div>
+                                    <div class="font-bold text-sm text-dark">Classic Design</div>
+                                    <div class="text-[10px] text-slate-500">The default clean layout</div>
+                                </div>
+                            </button>
+
+                            <button @click="currentTemplate = 'template-modern'" 
+                                class="flex items-center p-3 rounded-xl border-2 transition-all text-left"
+                                :class="currentTemplate === 'template-modern' ? 'border-brand-600 bg-brand-50' : 'border-slate-200 hover:border-brand-200'">
+                                <div>
+                                    <div class="font-bold text-sm text-dark">Modern Dark Header</div>
+                                    <div class="text-[10px] text-slate-500">High contrast header design</div>
+                                </div>
+                            </button>
+
+                            <button @click="currentTemplate = 'template-minimal'" 
+                                class="flex items-center p-3 rounded-xl border-2 transition-all text-left"
+                                :class="currentTemplate === 'template-minimal' ? 'border-brand-600 bg-brand-50' : 'border-slate-200 hover:border-brand-200'">
+                                <div>
+                                    <div class="font-bold text-sm text-dark">Minimal Centered</div>
+                                    <div class="text-[10px] text-slate-500">Centered text with simple borders</div>
+                                </div>
+                            </button>
+                            <button @click="currentTemplate = 'template-sidebar'" 
+                                  class="flex items-center p-3 rounded-xl border-2 transition-all text-left"
+                                   :class="currentTemplate === 'template-sidebar' ? 'border-brand-600 bg-brand-50' : 'border-slate-200 hover:border-brand-200'">
+                             <div>
+                                 <div class="font-bold text-sm text-dark">Side Panel Pro</div>
+                                     <div class="text-[10px] text-slate-500">Dark left sidebar with white body</div>
+                              </div>
+                          </button>
+                        </div>
+                    </div>
+                    
+                    <div class="pt-6 border-t border-slate-100">
+                        <label class="input-label mb-3">Accent Color</label>
+                        <div class="flex flex-wrap gap-3">
+                            <button @click="themeColor = '#ef4444'" class="w-10 h-10 rounded-full bg-red-500 border-2"
+                                :class="themeColor === '#ef4444' ? 'border-dark scale-110' : 'border-transparent'"></button>
+                            <button @click="themeColor = '#3b82f6'" class="w-10 h-10 rounded-full bg-blue-500 border-2"
+                                :class="themeColor === '#3b82f6' ? 'border-dark scale-110' : 'border-transparent'"></button>
+                            <button @click="themeColor = '#10b981'"
+                                class="w-10 h-10 rounded-full bg-emerald-500 border-2"
+                                :class="themeColor === '#10b981' ? 'border-dark scale-110' : 'border-transparent'"></button>
+                            <button @click="themeColor = '#8b5cf6'"
+                                class="w-10 h-10 rounded-full bg-violet-500 border-2"
+                                :class="themeColor === '#8b5cf6' ? 'border-dark scale-110' : 'border-transparent'"></button>
+                            <button @click="themeColor = '#f59e0b'" class="w-10 h-10 rounded-full bg-amber-500 border-2"
+                                :class="themeColor === '#f59e0b' ? 'border-dark scale-110' : 'border-transparent'"></button>
+                            <button @click="themeColor = '#ec4899'" class="w-10 h-10 rounded-full bg-pink-500 border-2"
+                                :class="themeColor === '#ec4899' ? 'border-dark scale-110' : 'border-transparent'"></button>
+                            <button @click="themeColor = '#6366f1'"
+                                class="w-10 h-10 rounded-full bg-indigo-500 border-2"
+                                :class="themeColor === '#6366f1' ? 'border-dark scale-110' : 'border-transparent'"></button>
+                            <button @click="themeColor = '#14b8a6'" class="w-10 h-10 rounded-full bg-teal-500 border-2"
+                                :class="themeColor === '#14b8a6' ? 'border-dark scale-110' : 'border-transparent'"></button>
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="input-label mt-6 mb-3">Custom Hex Code</label>
+                        <div class="flex gap-2">
+                            <input v-model="themeColor" type="color"
+                                class="h-10 w-12 p-1 rounded cursor-pointer border border-slate-200">
+                            <input v-model="themeColor" type="text" class="form-input py-2 font-mono uppercase"
+                                maxlength="7">
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <div v-show="!isMobile || showPreview"
+            class="flex-1 bg-slate-100 md:bg-slate-200 overflow-y-auto overflow-x-hidden p-0 md:p-12 flex justify-center items-start a4-container transition-all duration-300">
+            <div class="a4-page flex flex-col shrink-0 shadow-2xl transition-all duration-300" :class="[currentTemplate, currentTemplate !== 'template-sidebar' ? 'p-12' : 'p-0']">
+
+                <div v-if="currentTemplate !== 'template-sidebar'" class="flex flex-col h-full w-full flex-1">
+                    <header class="flex items-start gap-8 border-b-4 border-dark pb-8 mb-8">
+                        <div v-if="cv.photo" class="shrink-0">
+                            <img :src="cv.photo"
+                                class="w-32 h-32 rounded-lg object-cover border-4 border-slate-50 shadow-lg bg-slate-100">
+                        </div>
+                        <div class="flex-grow pt-2">
+                            <h1 class="text-5xl font-black text-dark tracking-tighter uppercase mb-2 leading-none break-all"
+                                :style="{ color: 'var(--dark)' }">{{ cv.name || 'YOUR NAME' }}</h1>
+                            <p class="text-xl text-brand-600 font-bold uppercase tracking-[4px] mb-6 leading-none">{{
+                                cv.title || 'PROFESSIONAL TITLE' }}</p>
+
+                            <div
+                                class="grid grid-cols-2 gap-x-6 gap-y-2 text-dark text-[10px] font-bold uppercase tracking-wider contact-details">
+                                <div v-if="cv.email" class="flex items-center gap-2"><i
+                                        class="fa-solid fa-envelope text-brand-600 w-4"></i> {{ cv.email }}</div>
+                                <div v-if="cv.phone" class="flex items-center gap-2"><i
+                                        class="fa-solid fa-phone text-brand-600 w-4"></i> {{ cv.phone }}</div>
+                                <div v-if="cv.location" class="flex items-center gap-2"><i
+                                        class="fa-solid fa-location-dot text-brand-600 w-4"></i> {{ cv.location }}</div>
+                                <div v-if="cv.website" class="flex items-center gap-2"><i
+                                        class="fa-solid fa-globe text-brand-600 w-4"></i> {{ cv.website }}</div>
+                                <div v-if="cv.linkedin" class="flex items-center gap-2"><i
+                                        class="fa-brands fa-linkedin text-brand-600 w-4"></i> {{ cv.linkedin }}</div>
+                                <div v-if="cv.github" class="flex items-center gap-2"><i
+                                        class="fa-brands fa-github text-brand-600 w-4"></i> {{ cv.github }}</div>
+                            </div>
+                        </div>
+                    </header>
+
+                    <div class="grid grid-cols-12 gap-10 flex-1">
+                        <div class="col-span-8 space-y-8">
+                            <section v-if="cv.summary">
+                                <h2
+                                    class="text-sm font-black uppercase tracking-[3px] text-dark mb-3 flex items-center gap-3">
+                                    <span class="w-8 h-1 bg-brand-600"></span> Profile
+                                </h2>
+                                <p class="text-slate-700 text-justify text-xs leading-6 font-medium">{{ cv.summary }}</p>
+                            </section>
+
+                            <section v-if="cv.experience.length > 0">
+                                <h2
+                                    class="text-sm font-black uppercase tracking-[3px] text-dark mb-5 flex items-center gap-3">
+                                    <span class="w-8 h-1 bg-brand-600"></span> Experience
+                                </h2>
+                                <div v-for="(job, index) in cv.experience" :key="index"
+                                    class="mb-6 last:mb-0 relative pl-4 border-l-2 border-slate-100">
+                                    <div class="absolute -left-[5px] top-1.5 w-2 h-2 rounded-full bg-brand-600"></div>
+                                    <div class="flex justify-between items-baseline mb-1">
+                                        <h3 class="font-bold text-dark text-lg uppercase tracking-tight leading-none">{{
+                                            job.company }}</h3>
+                                        <span
+                                            class="text-[9px] font-black bg-slate-100 text-slate-500 px-2 py-0.5 rounded">{{
+                                            job.start }} - {{ job.end }}</span>
+                                    </div>
+                                    <div class="text-brand-600 font-bold text-xs uppercase tracking-widest mb-2">{{
+                                        job.position }}</div>
+                                    <p class="text-slate-600 text-xs whitespace-pre-line leading-relaxed font-medium">{{
+                                        job.description }}</p>
+                                </div>
+                            </section>
+
+                            <section v-if="cv.projects.length > 0">
+                                 <h2 class="text-sm font-black text-[#324458] border-b-[2px] border-[#324458] pb-1 mb-3 uppercase tracking-wider">Projects</h2>
+                                 <div class="space-y-4">
+                             <div v-for="(proj, index) in cv.projects" :key="index">
+                            <div class="font-bold text-xs text-dark">{{ proj.name }}</div>
+                             <div v-if="proj.link" class="text-[9px] text-brand-600 mb-1 break-all">{{ proj.link }}</div>
+                              <p class="text-[10px] text-slate-600 mt-0.5 leading-snug whitespace-pre-line">{{ proj.description }}</p>
+                              </div>
+                           </div>
+                         </section>
+                        </div>
+
+                        <div class="col-span-4 space-y-8">
+                            <section v-if="cv.skills.length > 0">
+                                <h2
+                                    class="text-sm font-black uppercase tracking-[2px] text-dark mb-4 border-b-2 border-brand-600 pb-1">
+                                    Skills</h2>
+                                <div class="flex flex-wrap gap-2">
+                                    <div v-for="skill in cv.skills" :key="skill"
+                                        class="bg-dark text-white text-[10px] px-2 py-1 rounded font-bold uppercase tracking-wider">
+                                        {{ skill }}
+                                    </div>
+                                </div>
+                            </section>
+
+                            <section v-if="cv.education.length > 0">
+                                <h2
+                                    class="text-sm font-black uppercase tracking-[2px] text-dark mb-4 border-b-2 border-brand-600 pb-1">
+                                    Education</h2>
+                                <div class="flex flex-col gap-4">
+                                    <div v-for="(edu, index) in cv.education" :key="index">
+                                        <div class="font-bold text-dark text-xs uppercase leading-tight">{{ edu.degree }}
+                                        </div>
+                                        <div class="text-[10px] text-slate-500 font-bold mt-0.5">{{ edu.institution }}</div>
+                                        <div class="text-[9px] text-brand-600 font-black mt-0.5">{{ edu.start }} - {{
+                                            edu.end }}</div>
+                                    </div>
+                                </div>
+                            </section>
+
+                            <section v-if="cv.languages.length > 0">
+                                <h2
+                                    class="text-sm font-black uppercase tracking-[2px] text-dark mb-4 border-b-2 border-brand-600 pb-1">
+                                    Languages</h2>
+                                <div class="space-y-2">
+                                    <div v-for="(lang, index) in cv.languages" :key="index"
+                                        class="flex justify-between items-center border-b border-slate-100 pb-1 mb-1 last:border-0 last:mb-0 last:pb-0">
+                                        <span class="text-xs font-bold text-dark">{{ lang.language }}</span>
+                                        <span class="text-[9px] text-brand-600 font-bold uppercase">{{ lang.proficiency
+                                            }}</span>
+                                    </div>
+                                </div>
+                            </section>
+
+                            <section v-if="cv.certifications.length > 0">
+                                <h2
+                                    class="text-sm font-black uppercase tracking-[2px] text-dark mb-4 border-b-2 border-brand-600 pb-1">
+                                    Certifications</h2>
+                                <div class="space-y-3">
+                                    <div v-for="(cert, index) in cv.certifications" :key="index">
+                                        <div class="font-bold text-dark text-[10px] uppercase leading-tight">{{ cert.name }}
+                                        </div>
+                                        <div class="flex justify-between items-center mt-0.5">
+                                            <span class="text-[9px] text-slate-500">{{ cert.issuer }}</span>
+                                            <span class="text-[9px] text-brand-600 font-bold">{{ cert.year }}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </section>
+                        </div>
+                    </div>
+
+                    <div class="mt-auto pt-6 border-t border-slate-100 flex justify-between items-center text-[8px] text-slate-300 font-black uppercase tracking-widest italic">
+                        <p>Generated by CV Master</p>
+                        <div class="flex gap-1">
+                            <div class="w-8 h-1 bg-brand-600"></div>
+                            <div class="w-4 h-1 bg-dark"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div v-if="currentTemplate === 'template-sidebar'" class="flex w-full min-h-full h-full bg-white text-left font-sans">
+                    
+                    <div class="w-[35%] py-12 px-8 flex flex-col items-center gap-8 shrink-0 transition-colors duration-300" :style="{ backgroundColor: themeColor }">
+                        
+                        <div class="text-center w-full">
+                            <div v-if="cv.photo" class="mx-auto mb-4 w-40 h-40 rounded-full border-[3px] border-white overflow-hidden shadow-lg bg-white flex items-center justify-center">
+                                <img :src="cv.photo" class="w-full h-full object-cover">
+                            </div>
+                            <h1 class="text-2xl font-black text-white tracking-wide mt-2">{{ cv.name || 'Your Name' }}</h1>
+                            <p class="text-xs text-white/80 font-medium mt-1 tracking-wider uppercase">{{ cv.title || 'Your Title' }}</p>
+                        </div>
+
+                        <div class="w-full space-y-8 mt-4">
+                            <div class="w-full">
+                                <h2 class="text-sm font-bold text-white border-b border-white/30 pb-1 mb-4 uppercase tracking-wider">Contact</h2>
+                                <div class="space-y-3 text-[11px] text-white/90">
+                                    <div v-if="cv.email" class="flex items-start gap-3 break-all"><i class="fa-solid fa-envelope text-white/70 w-3 mt-0.5"></i> <span>{{ cv.email }}</span></div>
+                                    <div v-if="cv.phone" class="flex items-start gap-3"><i class="fa-solid fa-phone text-white/70 w-3 mt-0.5"></i> <span>{{ cv.phone }}</span></div>
+                                    <div v-if="cv.location" class="flex items-start gap-3 break-all"><i class="fa-solid fa-location-dot text-white/70 w-3 mt-0.5"></i> <span>{{ cv.location }}</span></div>
+                                    <div v-if="cv.website" class="flex items-start gap-3 break-all"><i class="fa-solid fa-globe text-white/70 w-3 mt-0.5"></i> <span>{{ cv.website }}</span></div>
+                                    <div v-if="cv.linkedin" class="flex items-start gap-3 break-all"><i class="fa-brands fa-linkedin text-white/70 w-3 mt-0.5"></i> <span>{{ cv.linkedin }}</span></div>
+                                    <div v-if="cv.github" class="flex items-start gap-3 break-all"><i class="fa-brands fa-github text-white/70 w-3 mt-0.5"></i> <span>{{ cv.github }}</span></div>
+                                </div>
+                            </div>
+
+                            <div class="w-full" v-if="cv.skills.length > 0">
+                                <h2 class="text-sm font-bold text-white border-b border-white/30 pb-1 mb-4 uppercase tracking-wider">Skills</h2>
+                                <div class="flex flex-wrap gap-2 text-[11px] text-white">
+                                    <span v-for="skill in cv.skills" :key="skill" class="bg-black/20 px-2 py-1 rounded">{{ skill }}</span>
+                                </div>
+                            </div>
+
+                            <div class="w-full" v-if="cv.languages.length > 0">
+                                <h2 class="text-sm font-bold text-white border-b border-white/30 pb-1 mb-4 uppercase tracking-wider">Languages</h2>
+                                <div class="space-y-2">
+                                    <div v-for="(lang, index) in cv.languages" :key="index" class="flex justify-between text-[11px] text-white border-b border-white/20 pb-1 last:border-0">
+                                        <span class="font-bold">{{ lang.language }}</span>
+                                        <span class="text-white/80">{{ lang.proficiency }}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="w-[65%] py-12 px-10 flex flex-col gap-8">
+                        
+                        <section v-if="cv.summary">
+                            <h2 class="text-lg font-black text-[#324458] border-b-[2px] border-[#324458] pb-1 mb-3 uppercase tracking-wider">Profile</h2>
+                            <p class="text-xs text-slate-700 leading-relaxed text-justify">{{ cv.summary }}</p>
+                        </section>
+
+                        <section v-if="cv.experience.length > 0">
+                            <h2 class="text-lg font-black text-[#324458] border-b-[2px] border-[#324458] pb-1 mb-4 uppercase tracking-wider">Work Experience</h2>
+                            <div class="space-y-5">
+                                <div v-for="(job, index) in cv.experience" :key="index">
+                                    <div class="flex justify-between items-end mb-1">
+                                        <h3 class="font-bold text-sm text-[#324458] uppercase">{{ job.position }}</h3>
+                                        <span class="text-[10px] text-slate-500 font-bold whitespace-nowrap ml-2">{{ job.start }} - {{ job.end }}</span>
+                                    </div>
+                                    <div class="text-[11px] font-bold text-slate-500 mb-2 uppercase">{{ job.company }}</div>
+                                    <p class="text-xs text-slate-700 leading-relaxed whitespace-pre-line">{{ job.description }}</p>
+                                </div>
+                            </div>
+                        </section>
+
+                        <section v-if="cv.education.length > 0">
+                            <h2 class="text-lg font-black text-[#324458] border-b-[2px] border-[#324458] pb-1 mb-4 uppercase tracking-wider">Education</h2>
+                            <div class="space-y-4">
+                                <div v-for="(edu, index) in cv.education" :key="index">
+                                    <div class="flex justify-between items-end mb-1">
+                                        <h3 class="font-bold text-sm text-[#324458] uppercase">{{ edu.degree }}</h3>
+                                        <span class="text-[10px] text-slate-500 font-bold whitespace-nowrap ml-2">{{ edu.start }} - {{ edu.end }}</span>
+                                    </div>
+                                    <div class="text-[11px] font-bold text-slate-500 uppercase">{{ edu.institution }}</div>
+                                </div>
+                            </div>
+                        </section>
+
+                        <div v-if="cv.projects.length > 0 || cv.certifications.length > 0" class="grid grid-cols-2 gap-8 mt-auto pt-4">
+                            <section v-if="cv.projects.length > 0">
+                                <h2 class="text-sm font-black text-[#324458] border-b-[2px] border-[#324458] pb-1 mb-3 uppercase tracking-wider">Projects</h2>
+                                <div class="space-y-3">
+                                    <div v-for="(proj, index) in cv.projects" :key="index">
+                                        <div class="font-bold text-xs text-dark">{{ proj.name }}</div>
+                                        <div v-if="proj.link" class="text-[9px] text-brand-600">{{ proj.link }}</div>
+                                        <p class="text-[10px] text-slate-600 mt-0.5 leading-snug">{{ proj.description }}</p>
+                                    </div>
+                                </div>
+                            </section>
+                            
+                            <section v-if="cv.certifications.length > 0">
+                                <h2 class="text-sm font-black text-[#324458] border-b-[2px] border-[#324458] pb-1 mb-3 uppercase tracking-wider">Certifications</h2>
+                                <div class="space-y-2">
+                                    <div v-for="(cert, index) in cv.certifications" :key="index">
+                                        <div class="font-bold text-xs text-dark">{{ cert.name }}</div>
+                                        <div class="flex justify-between text-[9px] text-slate-500">
+                                            <span>{{ cert.issuer }}</span>
+                                            <span>{{ cert.year }}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </section>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+                <div
+                    class="mt-auto pt-6 border-t border-slate-100 flex justify-between items-center text-[8px] text-slate-300 font-black uppercase tracking-widest italic">
+                    <p>Generated by CV Master</p>
+                    <div class="flex gap-1">
+                        <div class="w-8 h-1 bg-brand-600"></div>
+                        <div class="w-4 h-1 bg-dark"></div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/3.3.4/vue.global.min.js"></script>
+
+    <script src="app.js"></script>
+
+</body>
+
+</html>
