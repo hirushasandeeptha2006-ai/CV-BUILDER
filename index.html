@@ -72,31 +72,59 @@
         <div v-show="!isMobile || !showPreview"
             class="w-full md:w-[480px] bg-white border-r border-slate-200 flex flex-col no-print shadow-2xl z-10 shrink-0 h-full overflow-hidden">
 
-            <div class="px-6 pt-6 bg-white shrink-0 z-20">
+            <div class="px-6 pt-6 bg-white shrink-0 z-20 overflow-hidden">
                 <div class="sidebar-tabs">
-                    <button @click="activeTab = 'templates'"
-                        :class="['tab-btn', activeTab === 'templates' ? 'active' : '']">
-                        <i class="fa-solid fa-palette mr-1"></i> Design
-                    </button>
-                    <button @click="activeTab = 'personal'"
-                        :class="['tab-btn', activeTab === 'personal' ? 'active' : '']">
-                        <i class="fa-solid fa-user mr-1"></i> Personal
-                    </button>
-                    <button @click="activeTab = 'experience'"
-                        :class="['tab-btn', activeTab === 'experience' ? 'active' : '']">
-                        <i class="fa-solid fa-briefcase mr-1"></i> Experience
-                    </button>
-                    <button @click="activeTab = 'education'"
-                        :class="['tab-btn', activeTab === 'education' ? 'active' : '']">
-                        <i class="fa-solid fa-graduation-cap mr-1"></i> Education
-                    </button>
-                    <button @click="activeTab = 'projects'"
-                        :class="['tab-btn', activeTab === 'projects' ? 'active' : '']">
-                        <i class="fa-solid fa-code mr-1"></i> Projects
-                    </button>
-                    <button @click="activeTab = 'skills'" :class="['tab-btn', activeTab === 'skills' ? 'active' : '']">
-                        <i class="fa-solid fa-list mr-1"></i> Skills
-                    </button>
+                    <div class="tabs-track">
+                        <button @click="activeTab = 'templates'"
+                            :class="['tab-btn', activeTab === 'templates' ? 'active' : '']">
+                            <i class="fa-solid fa-palette mr-1"></i> Design
+                        </button>
+                        <button @click="activeTab = 'personal'"
+                            :class="['tab-btn', activeTab === 'personal' ? 'active' : '']">
+                            <i class="fa-solid fa-user mr-1"></i> Personal
+                        </button>
+                        <button @click="activeTab = 'experience'"
+                            :class="['tab-btn', activeTab === 'experience' ? 'active' : '']">
+                            <i class="fa-solid fa-briefcase mr-1"></i> Experience
+                        </button>
+                        <button @click="activeTab = 'education'"
+                            :class="['tab-btn', activeTab === 'education' ? 'active' : '']">
+                            <i class="fa-solid fa-graduation-cap mr-1"></i> Education
+                        </button>
+                        <button @click="activeTab = 'projects'"
+                            :class="['tab-btn', activeTab === 'projects' ? 'active' : '']">
+                            <i class="fa-solid fa-code mr-1"></i> Projects
+                        </button>
+                        <button @click="activeTab = 'skills'"
+                            :class="['tab-btn', activeTab === 'skills' ? 'active' : '']">
+                            <i class="fa-solid fa-list mr-1"></i> Skills
+                        </button>
+                        <!-- Duplicate set for seamless scrolling -->
+                        <button @click="activeTab = 'templates'"
+                            :class="['tab-btn', activeTab === 'templates' ? 'active' : '']">
+                            <i class="fa-solid fa-palette mr-1"></i> Design
+                        </button>
+                        <button @click="activeTab = 'personal'"
+                            :class="['tab-btn', activeTab === 'personal' ? 'active' : '']">
+                            <i class="fa-solid fa-user mr-1"></i> Personal
+                        </button>
+                        <button @click="activeTab = 'experience'"
+                            :class="['tab-btn', activeTab === 'experience' ? 'active' : '']">
+                            <i class="fa-solid fa-briefcase mr-1"></i> Experience
+                        </button>
+                        <button @click="activeTab = 'education'"
+                            :class="['tab-btn', activeTab === 'education' ? 'active' : '']">
+                            <i class="fa-solid fa-graduation-cap mr-1"></i> Education
+                        </button>
+                        <button @click="activeTab = 'projects'"
+                            :class="['tab-btn', activeTab === 'projects' ? 'active' : '']">
+                            <i class="fa-solid fa-code mr-1"></i> Projects
+                        </button>
+                        <button @click="activeTab = 'skills'"
+                            :class="['tab-btn', activeTab === 'skills' ? 'active' : '']">
+                            <i class="fa-solid fa-list mr-1"></i> Skills
+                        </button>
+                    </div>
                 </div>
             </div>
 
@@ -108,13 +136,13 @@
                     </div>
                     <div class="grid grid-cols-2 gap-4">
                         <!-- 1. Classic Pro (Professional) -->
-                        <!-- 1. Classic Pro (Professional) -->
                         <button @click="applyLayout('template-professional')"
                             class="group flex flex-col gap-2 transition-all">
                             <div class="aspect-[1/1.41] bg-white rounded-lg border-2 transition-all p-0 shadow-sm relative overflow-hidden group-hover:scale-[1.02] flex flex-col"
                                 :class="currentTemplate === 'template-professional' ? 'border-brand-600 ring-2 ring-brand-200 shadow-md' : 'border-slate-100 hover:border-slate-300'">
                                 <!-- Header -->
-                                <div class="w-full bg-[#2c3e50] h-12 mb-2 flex items-center px-1.5 gap-1.5 shrink-0">
+                                <div
+                                    class="w-full bg-[#2c3e50] h-12 mb-2 flex items-center px-1.5 gap-1.5 shrink-0 border-t-2 border-[#34495e]">
                                     <div class="w-7 h-7 bg-slate-400 rounded-sm border-2 border-white/20"></div>
                                     <div class="flex-1 flex flex-col justify-center text-left">
                                         <div class="text-[5px] font-bold text-white leading-tight">JOHN DOE</div>
@@ -183,11 +211,14 @@
                         </button>
 
                         <!-- 2. Modern Elegant (Teal) -->
-                        <!-- 2. Modern Elegant (Teal) -->
                         <button @click="applyLayout('template-elegant')"
                             class="group flex flex-col gap-2 transition-all">
                             <div class="aspect-[1/1.41] bg-white rounded-lg border-2 transition-all p-0 shadow-sm relative overflow-hidden group-hover:scale-[1.02] flex flex-col"
                                 :class="currentTemplate === 'template-elegant' ? 'border-teal-600 ring-2 ring-teal-100 shadow-md' : 'border-slate-100 hover:border-teal-200'">
+                                <!-- Color Bar Accent -->
+                                <div
+                                    class="absolute left-0 top-0 bottom-0 w-1 bg-gradient-to-b from-teal-600 via-teal-700 to-teal-600 z-10">
+                                </div>
                                 <!-- Big Header -->
                                 <div
                                     class="w-full bg-teal-600 h-16 flex flex-col items-center justify-center gap-0.5 shrink-0 px-2 text-center">
@@ -694,13 +725,13 @@
 
                 <div class="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-8">
                     <!-- 1. Classic Pro -->
-                    <!-- 1. Classic Pro -->
                     <button @click="applyLayout('template-professional')"
                         class="group flex flex-col gap-4 text-center transition-all">
                         <div class="aspect-[1/1.41] bg-white rounded-2xl border-2 transition-all p-0 shadow-md relative overflow-hidden group-hover:shadow-xl group-hover:-translate-y-1 flex flex-col"
                             :class="currentTemplate === 'template-professional' ? 'border-brand-600 ring-4 ring-brand-100 shadow-xl' : 'border-slate-100 hover:border-brand-200'">
                             <!-- Header -->
-                            <div class="w-full bg-[#2c3e50] h-16 mb-2 flex items-center px-4 gap-3 shrink-0">
+                            <div
+                                class="w-full bg-[#2c3e50] h-16 mb-2 flex items-center px-4 gap-3 shrink-0 border-t-4 border-[#34495e]">
                                 <div class="w-10 h-10 bg-slate-400 rounded-lg border-2 border-white/20"></div>
                                 <div class="flex-1 flex flex-col justify-center text-left">
                                     <div class="text-[8px] font-bold text-white leading-tight">JOHN DOE</div>
@@ -767,11 +798,14 @@
                     </button>
 
                     <!-- 2. Modern Elegant -->
-                    <!-- 2. Modern Elegant -->
                     <button @click="applyLayout('template-elegant')"
                         class="group flex flex-col gap-4 text-center transition-all">
                         <div class="aspect-[1/1.41] bg-white rounded-2xl border-2 transition-all p-0 shadow-md relative overflow-hidden group-hover:shadow-xl group-hover:-translate-y-1 flex flex-col"
                             :class="currentTemplate === 'template-elegant' ? 'border-teal-600 ring-4 ring-teal-100 shadow-xl' : 'border-slate-100 hover:border-brand-200'">
+                            <!-- Color Bar Accent -->
+                            <div
+                                class="absolute left-0 top-0 bottom-0 w-1.5 bg-gradient-to-b from-teal-600 via-teal-700 to-teal-600 z-10">
+                            </div>
                             <!-- Big Header -->
                             <div
                                 class="w-full bg-teal-600 h-20 flex flex-col items-center justify-center gap-1 shrink-0 px-4 text-center">
@@ -990,8 +1024,9 @@
                     :style="{ transform: 'scale(' + cvScale + ')', width: (1/cvScale * 100) + '%' }">
 
                     <!-- 1. TEMPLATE PROFESSIONAL (Sidebar Right) -->
-                    <div v-if="currentTemplate === 'template-professional'" class="flex-1 flex flex-col p-12">
-                        <header class="bg-[#2c3e50] text-white p-10 -m-12 mb-10 flex items-center gap-8 no-shrink">
+                    <div v-if="currentTemplate === 'template-professional'" class="flex-1 flex flex-col">
+                        <header
+                            class="bg-[#2c3e50] text-white p-10 flex items-center gap-8 no-shrink border-t-8 border-[#34495e]">
                             <img v-if="cv.photo" :src="cv.photo"
                                 class="w-32 h-32 rounded-lg object-cover border-4 border-white/20">
                             <div>
@@ -1001,7 +1036,7 @@
                                     'TITLE' }}</p>
                             </div>
                         </header>
-                        <div class="flex-grow mt-8">
+                        <div class="flex-grow mt-8 px-12">
                             <div class="grid grid-cols-3 gap-10 h-full pr-2">
                                 <div class="col-span-2 space-y-8">
                                     <section v-if="cv.summary">
@@ -1286,8 +1321,12 @@
                     </div>
 
                     <!-- 3. TEMPLATE ELEGANT (Teal Accented) -->
-                    <div v-else-if="currentTemplate === 'template-elegant'" class="flex-1 flex flex-col">
-                        <header class="bg-[#5f9ea0] text-white p-14 flex flex-col items-center gap-4">
+                    <div v-else-if="currentTemplate === 'template-elegant'" class="flex-1 flex flex-col relative">
+                        <!-- Vertical Color Bar Accent -->
+                        <div
+                            class="absolute left-0 top-0 bottom-0 w-6 bg-gradient-to-b from-[#5f9ea0] via-[#4a8588] to-[#5f9ea0] shadow-lg z-10">
+                        </div>
+                        <header class="bg-[#5f9ea0] text-white p-14 flex flex-col items-center gap-4 relative">
                             <img v-if="cv.photo" :src="cv.photo"
                                 class="w-32 h-32 rounded-full object-cover border-4 border-white/20 shadow-2xl mb-2">
                             <h1 class="text-5xl font-bold tracking-tight text-center">{{ cv.name || 'YOUR NAME' }}
@@ -1612,16 +1651,6 @@
                                     </section>
                                 </div>
                             </div>
-                        </div>
-                    </div>
-
-                    <!-- CV Footer -->
-                    <div
-                        class="mt-auto pt-6 border-t border-slate-100 flex justify-between items-center text-[8px] text-slate-300 font-black uppercase tracking-widest italic no-print p-6">
-                        <p>Generated by CV Master</p>
-                        <div class="flex gap-1">
-                            <div class="w-8 h-1 bg-brand-600"></div>
-                            <div class="w-4 h-1 bg-dark"></div>
                         </div>
                     </div>
                 </div>

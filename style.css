@@ -58,21 +58,41 @@ h4,
     background: #94a3b8;
 }
 
-/* Tab Navigation */
+/* Tab Navigation Marquee */
 .sidebar-tabs {
     display: flex;
-    gap: 0.5rem;
-    overflow-x: auto;
+    overflow: hidden;
     padding-bottom: 0.8rem;
     margin-bottom: 1.5rem;
     border-bottom: 1px solid var(--border);
-    scrollbar-width: none;
-    -ms-overflow-style: none;
-    scroll-behavior: smooth;
+    position: relative;
+    width: 100%;
 }
 
-.sidebar-tabs::-webkit-scrollbar {
-    display: none;
+.tabs-track {
+    display: flex;
+    gap: 0.5rem;
+    white-space: nowrap;
+    animation: marquee 25s linear infinite;
+    /* Very slow and premium */
+    width: max-content;
+}
+
+/* Pause animation on hover */
+.tabs-track:hover {
+    animation-play-state: paused;
+}
+
+@keyframes marquee {
+    0% {
+        transform: translateX(0);
+    }
+
+    100% {
+        transform: translateX(-50%);
+    }
+
+    /* Seamless loop at 50% scroll */
 }
 
 .tab-btn {
@@ -81,17 +101,46 @@ h4,
     font-size: 0.85rem;
     font-weight: 600;
     white-space: nowrap;
-    transition: all 0.2s;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     color: #64748b;
-    background: transparent;
-    border: 1px solid transparent;
+    background: #f8fafc;
+    border: 1px solid var(--border);
     flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
 }
 
 .tab-btn:hover {
-    background-color: #f1f5f9;
-    color: var(--dark);
-    transform: translateY(-1px);
+    background-color: white;
+    color: var(--primary);
+    border-color: var(--primary-light);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.tab-btn.active {
+    background-color: var(--primary);
+    color: white;
+    border-color: var(--primary);
+    box-shadow: 0 8px 20px -6px var(--primary-light);
+}
+
+.tab-btn i {
+    transition: transform 0.3s ease;
+}
+
+.tab-btn.active i {
+    transform: scale(1.1);
+}
+
+.tab-btn:hover {
+    background-color: #f8fafc;
+    color: var(--primary);
+    transform: translateY(-3px) scale(1.05) translateZ(10px);
+    border-color: var(--primary-light);
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+    z-index: 10;
 }
 
 .tab-btn:active {
@@ -101,16 +150,30 @@ h4,
 .tab-btn.active {
     background-color: var(--primary);
     color: white;
-    box-shadow: 0 8px 20px -6px var(--primary-light);
-    transform: translateY(-1px) scale(1.02);
+    border-color: var(--primary);
+    box-shadow: 0 8px 25px -5px var(--primary-light);
+    transform: translateY(-2px) scale(1.05);
+    animation: activePulse 2s infinite ease-in-out;
+}
+
+@keyframes activePulse {
+
+    0%,
+    100% {
+        transform: translateY(-2px) scale(1.05) rotate(0deg);
+    }
+
+    50% {
+        transform: translateY(-4px) scale(1.08) rotate(1deg);
+    }
 }
 
 .tab-btn i {
-    transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
 .tab-btn.active i {
-    transform: scale(1.2) rotate(-5deg);
+    transform: scale(1.2) rotate(-10deg);
 }
 
 /* Input Fields */
@@ -271,8 +334,6 @@ h4,
 .template-professional header {
     background-color: #2c3e50;
     color: white !important;
-    padding: 2.5rem !important;
-    margin: -3rem -3rem 2rem -3rem !important;
 }
 
 .template-professional header h1,
