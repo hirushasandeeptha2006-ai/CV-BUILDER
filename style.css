@@ -1,7 +1,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@500;600;700;800&display=swap');
 
 :root {
-    --primary: #ef4444; /* Default Red */
+    --primary: #ef4444;
     --primary-light: #fee2e2;
     --dark: #1a1a1a;
     --text: #334155;
@@ -9,13 +9,33 @@
     --border: #e2e8f0;
 }
 
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
 body {
     font-family: 'Inter', sans-serif;
     color: var(--text);
     background-color: #f1f5f9;
+    min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
 }
 
-h1, h2, h3, h4, .font-heading {
+img {
+    max-width: 100%;
+    height: auto;
+    display: block;
+}
+
+h1,
+h2,
+h3,
+h4,
+.font-heading {
     font-family: 'Poppins', sans-serif;
 }
 
@@ -43,9 +63,16 @@ h1, h2, h3, h4, .font-heading {
     display: flex;
     gap: 0.5rem;
     overflow-x: auto;
-    padding-bottom: 0.5rem;
+    padding-bottom: 0.8rem;
     margin-bottom: 1.5rem;
     border-bottom: 1px solid var(--border);
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    scroll-behavior: smooth;
+}
+
+.sidebar-tabs::-webkit-scrollbar {
+    display: none;
 }
 
 .tab-btn {
@@ -58,30 +85,41 @@ h1, h2, h3, h4, .font-heading {
     color: #64748b;
     background: transparent;
     border: 1px solid transparent;
+    flex-shrink: 0;
 }
 
 .tab-btn:hover {
     background-color: #f1f5f9;
     color: var(--dark);
+    transform: translateY(-1px);
+}
+
+.tab-btn:active {
+    transform: scale(0.95);
 }
 
 .tab-btn.active {
     background-color: var(--primary);
     color: white;
-    box-shadow: 0 4px 12px -2px rgba(0,0,0,0.1);
+    box-shadow: 0 8px 20px -6px var(--primary-light);
+    transform: translateY(-1px) scale(1.02);
+}
+
+.tab-btn i {
+    transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.tab-btn.active i {
+    transform: scale(1.2) rotate(-5deg);
 }
 
 /* Input Fields */
-.input-group {
-    margin-bottom: 1rem;
-}
-
 .input-label {
     display: block;
     font-size: 0.75rem;
     font-weight: 700;
     text-transform: uppercase;
-    color: #64748b; /* slate-500 */
+    color: #64748b;
     margin-bottom: 0.4rem;
     letter-spacing: 0.05em;
 }
@@ -105,38 +143,55 @@ h1, h2, h3, h4, .font-heading {
 }
 
 /* A4 Page Preview */
-.a4-wrapper {
-    perspective: 1000px;
-}
-
 .a4-page {
     width: 210mm;
+    min-width: 210mm;
+    height: 297mm;
     min-height: 297mm;
     background: white;
-    margin: 0 auto;
-    box-shadow: 0 20px 50px -12px rgba(0, 0, 0, 0.15);
+    margin: 2rem auto;
+    box-shadow: 0 10px 40px -15px rgba(0, 0, 0, 0.2);
     position: relative;
+    overflow: hidden;
     transform-origin: top center;
     transition: transform 0.3s ease;
 }
 
-/* Mobile Responsive Adjustments */
+.a4-page.dragging {
+    background-color: #ffffff;
+}
+
+.section-active {
+    outline: 3px solid var(--primary);
+    background-color: white !important;
+    z-index: 50;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+}
+
 @media (max-width: 1024px) {
     .a4-page {
-        transform: scale(0.6);
+        transform: scale(0.65);
+        transform-origin: top center;
         margin-bottom: -100mm;
     }
 }
 
 @media (max-width: 768px) {
+    .a4-container {
+        padding-left: 0 !important;
+        padding-right: 0 !important;
+    }
+
     .a4-page {
-        /* Mobile Scale Adjusted */
-        transform: scale(0.48); 
+        position: relative;
+        left: 50%;
+        transform: translateX(-50%) scale(0.45);
+        transform-origin: top center;
         margin-top: 2rem;
-        margin-bottom: -140mm; /* Prevent large whitespace below */
+        margin-bottom: -155mm;
         box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.2);
     }
-    
+
     .sidebar-tabs {
         padding: 0.5rem;
         background: white;
@@ -144,101 +199,173 @@ h1, h2, h3, h4, .font-heading {
         border-bottom: 1px solid var(--border);
     }
 
-    /* Hide scrollbar in mobile preview to look cleaner */
     .a4-container {
         overflow-x: hidden !important;
     }
 }
 
-/* Print Styles */
 @media print {
-    @page { margin: 0; size: auto; }
-    body, html { background: white; height: auto; overflow: visible; }
-    .no-print, nav, .sidebar-container, .tools-panel, .mobile-fab { display: none !important; }
-    #app { display: block !important; height: auto !important; overflow: visible !important; }
-    .a4-container { padding: 0 !important; margin: 0 !important; display: block !important; width: 100% !important; background: white !important; }
-    .a4-page { transform: none !important; box-shadow: none !important; margin: 0 !important; width: 100% !important; height: auto !important; page-break-after: always; }
-}
+    @page {
+        margin: 0;
+        size: A4 portrait;
+    }
 
+    body,
+    html {
+        background: white !important;
+        height: auto !important;
+        width: 100% !important;
+        overflow: visible !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+    }
+
+    .no-print,
+    nav,
+    .sidebar-container,
+    .mobile-fab,
+    footer,
+    .no-print * {
+        display: none !important;
+    }
+
+    #app {
+        display: block !important;
+        height: auto !important;
+        width: 210mm !important;
+        overflow: visible !important;
+        padding: 0 !important;
+        margin: 0 !important;
+    }
+
+    .a4-container {
+        padding: 0 !important;
+        margin: 0 !important;
+        display: block !important;
+        width: 210mm !important;
+        height: auto !important;
+        background: white !important;
+    }
+
+    .a4-page {
+        transform: none !important;
+        box-shadow: none !important;
+        margin: 0 !important;
+        width: 210mm !important;
+        height: 297mm !important;
+        page-break-after: always;
+        overflow: hidden !important;
+        border: none !important;
+    }
+}
 
 /* =========================================
-   NEW: TEMPLATE STYLES (Added dynamically)
+   PREMIUM TEMPLATE STYLES
    ========================================= */
 
-/* Template: Modern Dark Header */
-.template-modern header {
-    background-color: var(--dark);
-    padding: 2.5rem;
-    border-radius: 0.5rem;
-    border-bottom: none !important;
+/* 1. Professional (Multi-column Classic) */
+.template-professional {
+    background: white;
 }
-.template-modern header h1 {
+
+.template-professional header {
+    background-color: #2c3e50;
+    color: white !important;
+    padding: 2.5rem !important;
+    margin: -3rem -3rem 2rem -3rem !important;
+}
+
+.template-professional header h1,
+.template-professional header p,
+.template-professional header .contact-details,
+.template-professional header i {
     color: white !important;
 }
-.template-modern header .contact-details {
-    color: #e2e8f0 !important; /* Lighter text for dark bg */
-}
-.template-modern header img {
-    border-color: var(--primary) !important;
-}
 
-/* Template: Minimal Centered */
-.template-minimal header {
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
-    border-bottom: 2px solid var(--primary) !important;
-}
-.template-minimal header .flex-grow {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    width: 100%;
-}
-.template-minimal header .contact-details {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 1.5rem;
-}
-
-/* =========================================
-   TEXT OVERFLOW & LINE BREAK FIX
-   
-   ========================================= */
-
-/* 1. long words (ex:links) page stop text overflow  */
-.a4-page {
-    overflow-wrap: break-word;
-    word-break: break-word;
-}
-
-/* 2. Profile, Experience ,projects line brake using enter key */
-.a4-page p {
-    white-space: pre-line !important;
-}
-
-/* 3. long link in contact detail  */
-.contact-details div, 
-.a4-page span,
-.a4-page a {
+.template-wrapper {
     overflow-wrap: anywhere;
+    word-wrap: break-word;
+    word-break: normal;
+    white-space: pre-wrap;
 }
 
-/* =========================================
-   LAPTOP SCREEN FIX 
-   ========================================= */
-@media (max-width: 1440px) and (min-width: 1025px) {
-    .a4-container {
-      
-        justify-content: flex-start !important;
-        padding: 2rem !important;
-        overflow-x: auto !important;
-    }
-    .a4-page {
-       
-        transform: scale(0.85);
-        margin: 0 auto !important; 
-        margin-bottom: -40mm !important;
-    }
+.template-wrapper * {
+    max-width: 100%;
+}
+
+.template-elegant {
+    background: white;
+}
+
+.template-elegant header {
+    background: #5f9ea0;
+    color: white !important;
+    position: relative;
+    z-index: 10;
+    box-shadow: 0 4px 20px -5px rgba(95, 158, 160, 0.4);
+}
+
+.template-elegant header h1,
+.template-elegant header p,
+.template-elegant header span,
+.template-elegant header i {
+    color: white !important;
+}
+
+/* 4. Circular (Sidebar with Curve) */
+.template-circular {
+    background: linear-gradient(to right, #e3f2fd 30%, white 30.1%);
+    /* Light blue sidebar */
+}
+
+.template-circular header {
+    background: white;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    margin: -3rem -3rem 2rem -3rem !important;
+    padding: 3rem !important;
+}
+
+.template-circular header img {
+    border-radius: 50% !important;
+}
+
+/* 5. Modern Lateral (Dark Sidebar) */
+.template-modern {
+    background: transparent;
+}
+
+.template-modern header {
+    border-bottom: 4px solid #1a1a1a;
+}
+
+.template-modern .section-skills,
+.template-modern .section-education,
+.template-modern .section-languages,
+.template-modern .section-certifications {
+    color: white !important;
+}
+
+.template-modern .section-skills h2,
+.template-modern .section-education h2,
+.template-modern .section-languages h2,
+.template-modern .section-certifications h2 {
+    color: white !important;
+    border-color: rgba(255, 255, 255, 0.3) !important;
+}
+
+/* Hide scrollbar for print and keep it subtle for preview */
+.a4-page *::-webkit-scrollbar {
+    width: 4px;
+}
+
+.a4-page *::-webkit-scrollbar-thumb {
+    background: rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+}
+
+/* Ensure mini-previews render correctly on all devices */
+.group div[class*="text-["],
+.group span[class*="text-["] {
+    -webkit-text-size-adjust: none;
+    text-size-adjust: none;
 }

@@ -1,150 +1,172 @@
-const { createApp, ref, computed, watch, onMounted } = Vue;
+const { createApp } = Vue;
 
-const app = createApp({
-    setup() {
-        // --- State ---
-        const activeTab = ref('personal'); // personal, experience, unique, projects, education, styles
-        
-        // Mobile View State
-        const isMobile = ref(window.innerWidth < 768);
-        const showPreview = ref(false); // Controls mobile toggle (false = editor, true = preview)
+createApp({
+    data() {
+        return {
+            isMobile: window.innerWidth < 768,
+            showPreview: false,
+            activeTab: 'templates',
+            themeColor: '#ef4444',
+            currentTemplate: 'template-professional',
+            showTemplateSelector: false,
+            cvScale: 1,
+            skillsInput: 'React, Vue.js, Node.js, TypeScript, Tailwind CSS',
+            cv: {
+                photo: null,
+                name: 'JOHN DOE',
+                title: 'Software Engineer',
+                summary: 'Experienced software engineer with a strong background in developing scalable web applications and working with cross-functional teams to deliver high-quality software solutions.',
+                email: 'john.doe@example.com',
+                phone: '+1 234 567 890',
+                location: 'New York, USA',
+                linkedin: 'linkedin.com/in/johndoe',
+                github: 'github.com/johndoe',
+                website: 'johndoe.com',
+                experience: [
+                    { company: 'Tech Corp Inc.', position: 'Senior Developer', start: '2020', end: 'Present', description: 'Led the development of a cloud-based SaaS platform used by over 50k users.' },
+                    { company: 'WebStudio', position: 'Junior Developer', start: '2018', end: '2020', description: 'Collaborated with designers to implement responsive user interfaces.' }
+                ],
+                education: [
+                    { institution: 'State University', degree: 'BSc in Computer Science', start: '2014', end: '2018' }
+                ],
+                projects: [
+                    { name: 'E-commerce Dashboard', description: 'A comprehensive dashboard for managing online store inventory and sales analytics.' }
+                ],
+                certifications: [
+                    { name: 'Certified Cloud Practitioner', issuer: 'AWS', year: '2022' }
+                ],
+                skills: ['JavaScript', 'React', 'Node.js', 'Python', 'SQL'],
+                languages: [
+                    { language: 'English', proficiency: 'Native' },
+                    { language: 'Spanish', proficiency: 'Intermediate' }
+                ]
+            }
+        }
+    },
+    watch: {
+        themeColor() {
+            this.updateTheme();
+        },
+        activeTab() {
+            this.scrollToActiveTab();
+        },
+        cv: {
+            handler() {
+                this.autoShrink();
+            },
+            deep: true
+        }
+    },
+    methods: {
+        scrollToActiveTab() {
+            this.$nextTick(() => {
+                const activeBtn = document.querySelector('.tab-btn.active');
+                const container = document.querySelector('.sidebar-tabs');
+                if (activeBtn && container) {
+                    const containerWidth = container.offsetWidth;
+                    const btnWidth = activeBtn.offsetWidth;
+                    const btnLeft = activeBtn.offsetLeft;
 
-        // --- NEW: Template State ---
-        const currentTemplate = ref('template-classic'); // template-classic, template-modern, template-minimal
-
-        const cv = ref({
-            // Personal
-            photo: null,
-            name: '',
-            title: '',
-            email: '',
-            phone: '',
-            location: '',
-            website: '',
-            linkedin: '',
-            github: '',
-            summary: '',
-            
-            // Background
-            experience: [
-                { id: 1, company: 'Tech Solutions Inc.', position: 'Senior Developer', start: '2021', end: 'Present', description: 'Leading frontend development team and architectural decisions.' }
-            ],
-            
-            education: [
-                { id: 1, institution: 'University of Colombo', degree: 'BSc Computer Science', start: '2016', end: '2020', gpa: '3.8/4.0' }
-            ],
-            
-            // Skills & Languages
-            skills: ['React', 'Vue.js', 'Node.js', 'TypeScript', 'Tailwind CSS'],
-            languages: [
-                { language: 'English', proficiency: 'Native' },
-                { language: 'Sinhala', proficiency: 'Native' }
-            ],
-            
-            // Additional
-            projects: [
-                { name: 'E-Commerce Platform', link: 'github.com/example/shop', description: 'Built a full-stack e-commerce solution using MERN stack.' }
-            ],
-            
-            certifications: [
-                { name: 'AWS Certified Solutions Architect', year: '2022', issuer: 'Amazon Web Services' }
-            ]
-        });
-
-        // Theme Settings
-        const themeColor = ref('#ef4444'); // Default Red
-        const fontFamily = ref('Inter');
-        
-        // Helper for raw input of skills
-        const skillsInput = ref('React, Vue.js, Node.js, TypeScript, Tailwind CSS');
-
-        // --- Methods ---
-
-        // Image Handling
-        const handleImageUpload = (e) => {
-            const file = e.target.files[0];
+                    // Center the button in the container
+                    container.scrollTo({
+                        left: btnLeft - (containerWidth / 2) + (btnWidth / 2),
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        },
+        toggleMobileView() {
+            this.showPreview = !this.showPreview;
+            if (this.showPreview) {
+                this.$nextTick(() => {
+                    setTimeout(() => {
+                        this.autoShrink();
+                    }, 350); // Wait for transition
+                });
+            }
+        },
+        handleImageUpload(event) {
+            const file = event.target.files[0];
             if (file) {
                 const reader = new FileReader();
-                reader.onload = (ev) => cv.value.photo = ev.target.result;
+                reader.onload = (e) => {
+                    this.cv.photo = e.target.result;
+                    this.autoShrink();
+                };
                 reader.readAsDataURL(file);
             }
-        };
+        },
+        applyLayout(template) {
+            this.currentTemplate = template;
+            this.showTemplateSelector = false;
 
-        // List Management
-        const addItem = (list, item) => {
-            cv.value[list].push({ ...item, id: Date.now() });
-        };
+            // Apply Premium Presets
+            const presets = {
+                'template-professional': '#2c3e50',
+                'template-elegant': '#5f9ea0',
+                'template-circular': '#3b82f6',
+                'template-modern': '#1a1a1a'
+            };
+            if (presets[template]) this.themeColor = presets[template];
 
-        const removeItem = (list, index) => {
-            cv.value[list].splice(index, 1);
-        };
-        
-        // Skills Logic
-        const updateSkills = () => {
-            cv.value.skills = skillsInput.value.split(',').map(s => s.trim()).filter(s => s.length > 0);
-        };
-
-        // Theme Logic
-        const updateTheme = () => {
+            this.autoShrink();
+        },
+        updateSkills() {
+            this.cv.skills = this.skillsInput
+                .split(',')
+                .map(s => s.trim())
+                .filter(s => s !== '');
+            this.autoShrink();
+        },
+        updateTheme() {
             const root = document.documentElement;
-            root.style.setProperty('--primary', themeColor.value);
-            
-            // Calculate a lighter shade for backgrounds
-            root.style.setProperty('--primary-light', themeColor.value + '20'); // 20 hex = ~12% opacity
-        };
+            root.style.setProperty('--primary', this.themeColor);
+            root.style.setProperty('--primary-light', this.themeColor + '20');
+        },
+        autoShrink() {
+            this.$nextTick(() => {
+                const wrapper = document.querySelector('.template-wrapper');
+                const container = document.querySelector('.a4-page');
+                if (!wrapper || !container) return;
 
-        // Print Logic
-        const printCV = () => {
-            document.title = `${cv.value.name || 'My_CV'} - Resume`;
-            setTimeout(() => window.print(), 300);
-        };
+                // Reset scale to measure true height
+                // We set width explicitly to avoid width distortion on scale reset
+                this.cvScale = 1;
 
-        // Mobile Logic
-        const toggleMobileView = () => {
-            showPreview.value = !showPreview.value;
-        };
+                setTimeout(() => {
+                    const contentHeight = wrapper.scrollHeight;
+                    const containerHeight = container.clientHeight;
 
-        // Listen for resize to reset view if desktop
+                    if (contentHeight > containerHeight) {
+                        const scale = containerHeight / contentHeight;
+                        this.cvScale = Math.max(scale, 0.6); // Min scale 0.6
+                    } else {
+                        this.cvScale = 1;
+                    }
+                }, 50);
+            });
+        }
+    },
+    mounted() {
+        this.updateTheme();
+        this.autoShrink();
         window.addEventListener('resize', () => {
-            isMobile.value = window.innerWidth < 768;
-            if (!isMobile.value) showPreview.value = false;
+            this.isMobile = window.innerWidth < 768;
+            if (!this.isMobile) {
+                this.showPreview = false;
+                this.autoShrink();
+            }
         });
 
-        // Watchers
-        watch(themeColor, updateTheme);
-        
-        // Initialize
-       
-         onMounted(() => {
-         updateTheme();
-
-    // PC Mouse wheel Tabs scroll
-             const scrollContainer = document.querySelector(".sidebar-tabs");
-             if (scrollContainer) {
-            scrollContainer.addEventListener("wheel", (evt) => {
-             evt.preventDefault();
-             scrollContainer.scrollLeft += evt.deltaY;
-        });
+        // Horizontal scroll for tabs
+        const tabsContainer = document.querySelector('.sidebar-tabs');
+        if (tabsContainer) {
+            tabsContainer.addEventListener('wheel', (e) => {
+                if (e.deltaY !== 0) {
+                    e.preventDefault();
+                    tabsContainer.scrollLeft += e.deltaY;
+                }
+            });
+        }
     }
-});
-
-        return {
-            activeTab,
-            isMobile,
-            showPreview,
-            currentTemplate, // Added here
-            cv,
-            skillsInput,
-            themeColor,
-            fontFamily,
-            handleImageUpload,
-            addItem,
-            removeItem,
-            updateSkills,
-            printCV,
-            toggleMobileView
-        };
-    }
-});
-
-app.mount('#app');
+}).mount('#app');

@@ -55,8 +55,6 @@
         </div>
 
         <div class="flex items-center gap-4">
-            <a href="https://github.com" target="_blank" class="text-slate-400 hover:text-dark transition"><i
-                    class="fa-brands fa-github text-xl"></i></a>
             <button onclick="window.print()"
                 class="bg-dark text-white px-5 py-2 rounded-lg font-bold text-sm hover:bg-brand-600 transition shadow-lg flex items-center gap-2">
                 <i class="fa-solid fa-download"></i> <span class="hidden sm:inline">Export PDF</span>
@@ -66,23 +64,27 @@
 
     <div id="app" class="flex flex-col md:flex-row flex-1 overflow-hidden relative">
 
-        <button v-if="isMobile" @click="toggleMobileView" 
+        <button v-if="isMobile" @click="toggleMobileView"
             class="mobile-fab fixed bottom-6 right-6 z-50 bg-brand-600 text-white w-14 h-14 rounded-full shadow-2xl flex items-center justify-center text-xl transition transform active:scale-95 border-4 border-white md:hidden hover:bg-brand-700">
             <i :class="showPreview ? 'fa-solid fa-pen' : 'fa-solid fa-eye'"></i>
         </button>
 
         <div v-show="!isMobile || !showPreview"
-             class="w-full md:w-[480px] bg-white border-r border-slate-200 flex flex-col no-print shadow-2xl z-10 shrink-0 h-full overflow-hidden">
+            class="w-full md:w-[480px] bg-white border-r border-slate-200 flex flex-col no-print shadow-2xl z-10 shrink-0 h-full overflow-hidden">
 
             <div class="px-6 pt-6 bg-white shrink-0 z-20">
                 <div class="sidebar-tabs">
+                    <button @click="activeTab = 'templates'"
+                        :class="['tab-btn', activeTab === 'templates' ? 'active' : '']">
+                        <i class="fa-solid fa-palette mr-1"></i> Design
+                    </button>
                     <button @click="activeTab = 'personal'"
                         :class="['tab-btn', activeTab === 'personal' ? 'active' : '']">
                         <i class="fa-solid fa-user mr-1"></i> Personal
                     </button>
                     <button @click="activeTab = 'experience'"
                         :class="['tab-btn', activeTab === 'experience' ? 'active' : '']">
-                        <i class="fa-solid fa-briefcase mr-1"></i> Work
+                        <i class="fa-solid fa-briefcase mr-1"></i> Experience
                     </button>
                     <button @click="activeTab = 'education'"
                         :class="['tab-btn', activeTab === 'education' ? 'active' : '']">
@@ -93,18 +95,321 @@
                         <i class="fa-solid fa-code mr-1"></i> Projects
                     </button>
                     <button @click="activeTab = 'skills'" :class="['tab-btn', activeTab === 'skills' ? 'active' : '']">
-                        <i class="fa-solid fa-wand-magic-sparkles mr-1"></i> Skills
-                    </button>
-                    <button @click="activeTab = 'style'" :class="['tab-btn', activeTab === 'style' ? 'active' : '']">
-                        <i class="fa-solid fa-palette mr-1"></i> Style
+                        <i class="fa-solid fa-list mr-1"></i> Skills
                     </button>
                 </div>
             </div>
 
             <div class="flex-1 overflow-y-auto px-6 pb-20 custom-scrollbar">
 
+                <div v-if="activeTab === 'templates'" class="space-y-6 fade-in">
+                    <div class="flex items-center justify-between mb-2">
+                        <h3 class="font-bold text-dark text-lg">Select Template</h3>
+                    </div>
+                    <div class="grid grid-cols-2 gap-4">
+                        <!-- 1. Classic Pro (Professional) -->
+                        <!-- 1. Classic Pro (Professional) -->
+                        <button @click="applyLayout('template-professional')"
+                            class="group flex flex-col gap-2 transition-all">
+                            <div class="aspect-[1/1.41] bg-white rounded-lg border-2 transition-all p-0 shadow-sm relative overflow-hidden group-hover:scale-[1.02] flex flex-col"
+                                :class="currentTemplate === 'template-professional' ? 'border-brand-600 ring-2 ring-brand-200 shadow-md' : 'border-slate-100 hover:border-slate-300'">
+                                <!-- Header -->
+                                <div class="w-full bg-[#2c3e50] h-12 mb-2 flex items-center px-1.5 gap-1.5 shrink-0">
+                                    <div class="w-7 h-7 bg-slate-400 rounded-sm border-2 border-white/20"></div>
+                                    <div class="flex-1 flex flex-col justify-center text-left">
+                                        <div class="text-[5px] font-bold text-white leading-tight">JOHN DOE</div>
+                                        <div
+                                            class="text-[3px] font-bold text-amber-500 uppercase tracking-wider leading-tight">
+                                            Software Engineer</div>
+                                    </div>
+                                </div>
+                                <!-- Body -->
+                                <div class="flex gap-1.5 flex-1 px-1.5 pb-1 overflow-hidden text-left">
+                                    <div class="flex-1 space-y-2">
+                                        <div>
+                                            <div
+                                                class="text-[3px] font-bold uppercase text-slate-800 border-b border-slate-200 mb-0.5">
+                                                Profile</div>
+                                            <div class="text-[2px] text-slate-500 leading-tight">Experienced developer
+                                                with a passion for building scalable web applications.</div>
+                                        </div>
+                                        <div>
+                                            <div
+                                                class="text-[3px] font-bold uppercase text-slate-800 border-b border-slate-200 mb-0.5">
+                                                Experience</div>
+                                            <div class="text-[2.5px] font-bold text-slate-700">Tech Corp Inc.</div>
+                                            <div class="text-[2px] text-slate-500 mb-0.5">Senior Dev | 2020-Present
+                                            </div>
+                                            <div class="text-[2px] text-slate-400 leading-tight">Led team of 5
+                                                developers.</div>
+                                        </div>
+                                    </div>
+                                    <!-- Sidebar right -->
+                                    <div class="w-1/3 space-y-2 pt-0.5 border-l border-slate-100 pl-1">
+                                        <div>
+                                            <div class="text-[3px] font-bold uppercase text-slate-400 mb-0.5">Contact
+                                            </div>
+                                            <div class="text-[2px] text-slate-500 font-bold leading-tight">
+                                                john@email.com</div>
+                                            <div class="text-[2px] text-slate-500 font-bold leading-tight">123-456-7890
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <div class="text-[3px] font-bold uppercase text-slate-400 mb-0.5">Skills
+                                            </div>
+                                            <div class="flex flex-wrap gap-0.5">
+                                                <div class="bg-slate-100 text-[2px] px-0.5 rounded text-slate-600">JS
+                                                </div>
+                                                <div class="bg-slate-100 text-[2px] px-0.5 rounded text-slate-600">Vue
+                                                </div>
+                                                <div class="bg-slate-100 text-[2px] px-0.5 rounded text-slate-600">Node
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- Check Overlay -->
+                                <div v-if="currentTemplate === 'template-professional'"
+                                    class="absolute inset-0 bg-brand-600/10 flex items-center justify-center">
+                                    <div
+                                        class="bg-brand-600 text-white w-8 h-8 rounded-full flex items-center justify-center shadow-lg transform scale-110">
+                                        <i class="fa-solid fa-check text-sm"></i>
+                                    </div>
+                                </div>
+                            </div>
+                            <span class="text-[10px] font-bold uppercase text-center tracking-wider"
+                                :class="currentTemplate === 'template-professional' ? 'text-brand-600' : 'text-slate-400'">Classic
+                                Pro</span>
+                        </button>
+
+                        <!-- 2. Modern Elegant (Teal) -->
+                        <!-- 2. Modern Elegant (Teal) -->
+                        <button @click="applyLayout('template-elegant')"
+                            class="group flex flex-col gap-2 transition-all">
+                            <div class="aspect-[1/1.41] bg-white rounded-lg border-2 transition-all p-0 shadow-sm relative overflow-hidden group-hover:scale-[1.02] flex flex-col"
+                                :class="currentTemplate === 'template-elegant' ? 'border-teal-600 ring-2 ring-teal-100 shadow-md' : 'border-slate-100 hover:border-teal-200'">
+                                <!-- Big Header -->
+                                <div
+                                    class="w-full bg-teal-600 h-16 flex flex-col items-center justify-center gap-0.5 shrink-0 px-2 text-center">
+                                    <div class="w-6 h-6 bg-teal-800/20 rounded-full border border-teal-400 mb-0.5">
+                                    </div>
+                                    <div class="text-[6px] font-bold text-white leading-tight">SARAH JONES</div>
+                                    <div class="w-8 h-0.5 bg-white/30 rounded my-0.5"></div>
+                                    <div class="text-[3px] font-medium text-teal-100 tracking-widest uppercase">
+                                        Marketing Manager</div>
+                                </div>
+                                <!-- Body -->
+                                <div class="flex items-start p-1.5 gap-1.5 h-full overflow-hidden text-left">
+                                    <div class="w-1/3 space-y-2 pt-1 border-r border-slate-100 pr-1">
+                                        <div>
+                                            <div
+                                                class="text-[3px] font-bold text-teal-600 uppercase border-b border-slate-100 mb-0.5">
+                                                Skills</div>
+                                            <div class="text-[2.5px] text-slate-600 font-medium whitespace-pre-line">
+                                                Strategy
+                                                SEO
+                                                Content</div>
+                                        </div>
+                                        <div>
+                                            <div
+                                                class="text-[3px] font-bold text-teal-600 uppercase border-b border-slate-100 mb-0.5">
+                                                Education</div>
+                                            <div class="text-[2.5px] text-slate-800 font-bold">MBA</div>
+                                            <div class="text-[2px] text-slate-400">Uni of Tech</div>
+                                        </div>
+                                    </div>
+                                    <div class="flex-1 space-y-2 pt-1">
+                                        <div>
+                                            <div
+                                                class="text-[3px] font-bold text-teal-600 uppercase border-b border-slate-100 mb-0.5">
+                                                Profile</div>
+                                            <div class="text-[2px] text-slate-500 italic leading-tight">Creative
+                                                marketing professional with 5+ years experience.</div>
+                                        </div>
+                                        <div>
+                                            <div
+                                                class="text-[3px] font-bold text-teal-600 uppercase border-b border-slate-100 mb-0.5">
+                                                Experience</div>
+                                            <div class="text-[2.5px] font-bold text-slate-800">Global Brands Ltd.</div>
+                                            <div class="text-[2px] text-teal-600 font-bold mb-0.5">Marketing Lead</div>
+                                            <div class="text-[2px] text-slate-400 leading-tight">Optimized ad campaigns.
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- Check Overlay -->
+                                <div v-if="currentTemplate === 'template-elegant'"
+                                    class="absolute inset-0 bg-teal-600/10 flex items-center justify-center">
+                                    <div
+                                        class="bg-teal-600 text-white w-8 h-8 rounded-full flex items-center justify-center shadow-lg transform scale-110">
+                                        <i class="fa-solid fa-check text-sm"></i>
+                                    </div>
+                                </div>
+                            </div>
+                            <span class="text-[10px] font-bold uppercase text-center tracking-wider"
+                                :class="currentTemplate === 'template-elegant' ? 'text-teal-600' : 'text-slate-400'">Modern
+                                Elegant</span>
+                        </button>
+
+                        <!-- 3. Business Circular (Blue Sidebar) -->
+                        <!-- 3. Business Circular (Blue Sidebar) -->
+                        <button @click="applyLayout('template-circular')"
+                            class="group flex flex-col gap-2 transition-all">
+                            <div class="aspect-[1/1.41] bg-white rounded-lg border-2 transition-all p-0 shadow-sm relative overflow-hidden group-hover:scale-[1.02] flex"
+                                :class="currentTemplate === 'template-circular' ? 'border-blue-500 ring-2 ring-blue-100 shadow-md' : 'border-slate-100 hover:border-blue-200'">
+                                <!-- Sidebar -->
+                                <div
+                                    class="w-[34%] bg-blue-50 h-full flex flex-col items-center pt-3 gap-1 px-1 border-r border-blue-100 shrink-0">
+                                    <div class="w-8 h-8 rounded-full bg-blue-200 border-2 border-white mb-1 shadow-sm">
+                                    </div>
+                                    <div class="text-[5px] font-black text-slate-800 leading-none text-center">ALEX LEE
+                                    </div>
+                                    <div class="w-4 h-0.5 bg-blue-400 rounded-full my-0.5"></div>
+                                    <div
+                                        class="text-[2.5px] font-black text-blue-600 uppercase tracking-wider text-center mb-2">
+                                        Graphic Designer</div>
+
+                                    <div class="w-full space-y-1.5 px-0.5 text-left">
+                                        <div>
+                                            <div
+                                                class="text-[2.5px] font-black uppercase text-blue-300 tracking-widest mb-0.5 flex gap-0.5 items-center">
+                                                <div class="w-0.5 h-0.5 bg-blue-400 rounded-full"></div> Contact
+                                            </div>
+                                            <div class="text-[2px] font-bold text-slate-500 truncate">alex@design.com
+                                            </div>
+                                            <div class="text-[2px] font-bold text-slate-500">555-0123</div>
+                                        </div>
+                                        <div>
+                                            <div
+                                                class="text-[2.5px] font-black uppercase text-blue-300 tracking-widest mb-0.5 flex gap-0.5 items-center">
+                                                <div class="w-0.5 h-0.5 bg-blue-400 rounded-full"></div> Skills
+                                            </div>
+                                            <div class="flex flex-wrap gap-0.5">
+                                                <div
+                                                    class="bg-white border border-blue-100 text-[2px] px-0.5 py-0.5 rounded text-slate-700 font-bold uppercase">
+                                                    Ps</div>
+                                                <div
+                                                    class="bg-white border-blue-100 border text-[2px] px-0.5 py-0.5 rounded text-slate-700 font-bold uppercase">
+                                                    Ai</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- Body -->
+                                <div class="flex-1 p-2 space-y-3 pt-3 overflow-hidden text-left">
+                                    <div>
+                                        <div
+                                            class="text-[6px] font-black text-blue-800 uppercase tracking-tighter mb-1 flex items-center gap-1">
+                                            <div class="w-2 h-0.5 bg-blue-600"></div> Profile
+                                        </div>
+                                        <div class="text-[2.5px] text-slate-600 leading-tight">Creative designer with a
+                                            focus on branding and UI/UX.</div>
+                                    </div>
+                                    <div>
+                                        <div
+                                            class="text-[6px] font-black text-blue-800 uppercase tracking-tighter mb-1 flex items-center gap-1">
+                                            <div class="w-2 h-0.5 bg-blue-600"></div> Experience
+                                        </div>
+                                        <div class="pl-1.5 border-l-2 border-blue-100 relative">
+                                            <div
+                                                class="absolute -left-[3.5px] top-0.5 w-1.5 h-1.5 bg-blue-500 rounded-full">
+                                            </div>
+                                            <div class="text-[3px] font-bold text-slate-800">Studio X</div>
+                                            <div class="text-[2.5px] font-bold text-blue-600 mb-0.5">Lead Designer</div>
+                                            <div class="text-[2px] text-slate-500">Managed design projects.</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- Check Overlay -->
+                                <div v-if="currentTemplate === 'template-circular'"
+                                    class="absolute inset-0 bg-blue-600/10 flex items-center justify-center">
+                                    <div
+                                        class="bg-blue-500 text-white w-8 h-8 rounded-full flex items-center justify-center shadow-lg transform scale-110">
+                                        <i class="fa-solid fa-check text-sm"></i>
+                                    </div>
+                                </div>
+                            </div>
+                            <span class="text-[10px] font-bold uppercase text-center tracking-wider"
+                                :class="currentTemplate === 'template-circular' ? 'text-blue-600' : 'text-slate-400'">Business
+                                Circular</span>
+                        </button>
+
+                        <!-- 4. Bold Modern (Dark) -->
+                        <!-- 4. Bold Modern (Dark) -->
+                        <button @click="applyLayout('template-modern')"
+                            class="group flex flex-col gap-2 transition-all">
+                            <div class="aspect-[1/1.41] bg-white rounded-lg border-2 transition-all p-0 shadow-sm relative overflow-hidden group-hover:scale-[1.02] flex"
+                                :class="currentTemplate === 'template-modern' ? 'border-dark ring-2 ring-slate-200 shadow-md' : 'border-slate-100 hover:border-slate-400'">
+                                <!-- Sidebar -->
+                                <div class="w-[35%] bg-[#1a1a1a] h-full flex flex-col p-2 gap-2 text-white shrink-0">
+                                    <div class="w-full aspect-square bg-slate-700/50 rounded-sm mb-1"></div>
+                                    <div>
+                                        <div
+                                            class="text-[2.5px] font-black text-amber-500 tracking-widest uppercase mb-1 border-b border-white/10 pb-0.5">
+                                            Contact</div>
+                                        <div class="text-[2px] font-bold opacity-80 mb-0.5">email@test.com</div>
+                                        <div class="text-[2px] font-bold opacity-80">123-456-7890</div>
+                                    </div>
+                                    <div>
+                                        <div
+                                            class="text-[2.5px] font-black text-amber-500 tracking-widest uppercase mb-1 border-b border-white/10 pb-0.5">
+                                            Awards</div>
+                                        <div class="text-[2px] font-bold opacity-80 leading-tight">Best Coder 2024</div>
+                                    </div>
+                                </div>
+                                <!-- Body -->
+                                <div class="flex-1 flex flex-col p-2 gap-2 overflow-hidden text-left">
+                                    <div class="border-b-[1.5px] border-black pb-1">
+                                        <div
+                                            class="text-[8px] font-black text-[#1a1a1a] leading-[0.85] tracking-tighter">
+                                            DAVID<br><span class="text-slate-300">KING</span></div>
+                                        <div
+                                            class="text-[2.5px] font-black text-amber-600 uppercase tracking-widest mt-0.5">
+                                            Product Manager</div>
+                                    </div>
+                                    <div class="flex gap-1.5 h-full">
+                                        <div class="flex-1 space-y-2">
+                                            <div>
+                                                <div
+                                                    class="text-[2.5px] font-black uppercase tracking-widest text-slate-400 mb-1 italic border-b border-slate-100 pb-0.5">
+                                                    Expertise</div>
+                                                <div class="space-y-1">
+                                                    <div>
+                                                        <div
+                                                            class="text-[3px] font-black text-[#1a1a1a] uppercase leading-none">
+                                                            Tech Solutions</div>
+                                                        <div
+                                                            class="text-[2.5px] font-black text-amber-700 uppercase tracking-widest">
+                                                            Manager</div>
+                                                        <div
+                                                            class="text-[2px] text-slate-500 leading-tight mt-0.5 text-justify">
+                                                            Oversaw product roadmap.</div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- Check Overlay -->
+                                <div v-if="currentTemplate === 'template-modern'"
+                                    class="absolute inset-0 bg-dark/10 flex items-center justify-center">
+                                    <div
+                                        class="bg-dark text-white w-8 h-8 rounded-full flex items-center justify-center shadow-lg transform scale-110">
+                                        <i class="fa-solid fa-check text-sm"></i>
+                                    </div>
+                                </div>
+                            </div>
+                            <span class="text-[10px] font-bold uppercase text-center tracking-wider"
+                                :class="currentTemplate === 'template-modern' ? 'text-dark' : 'text-slate-400'">Bold
+                                Modern</span>
+                        </button>
+                    </div>
+
+                </div>
+
+
                 <div v-if="activeTab === 'personal'" class="space-y-6 fade-in">
-                    <div class="text-center mb-6">"
+                    <div class="text-center mb-6">
                         <div class="relative inline-block group">
                             <div
                                 class="w-28 h-28 rounded-full overflow-hidden border-4 border-slate-100 shadow-inner mx-auto bg-slate-50 flex items-center justify-center text-slate-300">
@@ -262,7 +567,6 @@
                 </div>
 
                 <div v-if="activeTab === 'projects'" class="space-y-8 fade-in">
-
                     <div>
                         <div class="flex justify-between items-center mb-4">
                             <h3 class="font-bold text-dark text-lg">Key Projects</h3>
@@ -287,8 +591,8 @@
                                         class="text-xs text-brand-600 bg-transparent outline-none border-b border-transparent focus:border-brand-500 text-right"
                                         placeholder="Project Link">
                                 </div>
-                                <textarea v-model="proj.description" rows="2"
-                                    class="w-full text-xs text-slate-600 bg-slate-50 p-2 rounded border border-slate-100 focus:bg-white focus:border-brand-200 outline-none transition"
+                                <textarea v-model="proj.description" rows="3"
+                                    class="w-full text-xs text-slate-600 bg-slate-50 p-3 rounded-lg border border-slate-100 focus:bg-white focus:border-brand-200 outline-none transition"
                                     placeholder="Project details..."></textarea>
                             </div>
                         </div>
@@ -332,9 +636,9 @@
                         <label class="input-label mb-2">Technical Skills (Comma Separated)</label>
                         <textarea v-model="skillsInput" @input="updateSkills" rows="4" class="form-input text-sm"
                             placeholder="React, Python, Design..."></textarea>
-                        <div class="flex flex-wrap gap-2 mt-3">
+                        <div class="flex flex-wrap gap-2 mt-4 text-slate-800">
                             <span v-for="skill in cv.skills"
-                                class="bg-brand-50 text-brand-700 px-2 py-1 rounded text-[10px] font-bold uppercase tracking-wider border border-brand-100">
+                                class="bg-brand-50 text-brand-700 px-3 py-1.5 rounded-lg text-[11px] font-bold uppercase tracking-wider border border-brand-100 shadow-sm animate-in fade-in slide-in-from-bottom-2">
                                 {{ skill }}
                             </span>
                         </div>
@@ -366,226 +670,954 @@
                         </div>
                     </div>
                 </div>
+            </div>
 
-                <div v-if="activeTab === 'style'" class="space-y-6 fade-in">
+            <!-- Color Picker Footer (Persistent at bottom of sidebar) -->
+        </div>
+        <div v-show="!isMobile || showPreview"
+            class="flex-1 bg-slate-100 md:bg-slate-200 overflow-y-auto overflow-x-hidden flex flex-col items-start md:items-center p-4 md:p-12 gap-10 a4-container transition-all duration-300">
+
+            <!-- Immersive Template Selection Overlay -->
+            <div v-if="showTemplateSelector"
+                class="w-full max-w-[210mm] no-print shrink-0 px-4 md:px-8 py-8 md:py-10 bg-white rounded-2xl md:rounded-3xl shadow-2xl border-2 border-brand-100 z-30 animate-in fade-in zoom-in duration-300">
+                <div class="flex items-center justify-between mb-6 md:mb-8">
                     <div>
-                        <h3 class="font-bold text-dark text-lg mb-4">Choose Template</h3>
-                        <div class="grid grid-cols-1 gap-3">
-                            <button @click="currentTemplate = 'template-classic'" 
-                                class="flex items-center p-3 rounded-xl border-2 transition-all text-left"
-                                :class="currentTemplate === 'template-classic' ? 'border-brand-600 bg-brand-50' : 'border-slate-200 hover:border-brand-200'">
-                                <div>
-                                    <div class="font-bold text-sm text-dark">Classic Design</div>
-                                    <div class="text-[10px] text-slate-500">The default clean layout</div>
-                                </div>
-                            </button>
-
-                            <button @click="currentTemplate = 'template-modern'" 
-                                class="flex items-center p-3 rounded-xl border-2 transition-all text-left"
-                                :class="currentTemplate === 'template-modern' ? 'border-brand-600 bg-brand-50' : 'border-slate-200 hover:border-brand-200'">
-                                <div>
-                                    <div class="font-bold text-sm text-dark">Modern Dark Header</div>
-                                    <div class="text-[10px] text-slate-500">High contrast header design</div>
-                                </div>
-                            </button>
-
-                            <button @click="currentTemplate = 'template-minimal'" 
-                                class="flex items-center p-3 rounded-xl border-2 transition-all text-left"
-                                :class="currentTemplate === 'template-minimal' ? 'border-brand-600 bg-brand-50' : 'border-slate-200 hover:border-brand-200'">
-                                <div>
-                                    <div class="font-bold text-sm text-dark">Minimal Centered</div>
-                                    <div class="text-[10px] text-slate-500">Centered text with simple borders</div>
-                                </div>
-                            </button>
-                            <button @click="currentTemplate = 'template-sidebar'" 
-                                  class="flex items-center p-3 rounded-xl border-2 transition-all text-left"
-                                   :class="currentTemplate === 'template-sidebar' ? 'border-brand-600 bg-brand-50' : 'border-slate-200 hover:border-brand-200'">
-                             <div>
-                                 <div class="font-bold text-sm text-dark">Side Panel Pro</div>
-                                     <div class="text-[10px] text-slate-500">Dark left sidebar with white body</div>
-                              </div>
-                          </button>
-                        </div>
+                        <h2 class="text-2xl md:text-3xl font-black text-dark tracking-tight mb-2">Select Your Vibe</h2>
+                        <p class="text-slate-500 font-medium tracking-tight italic">Pick a design style below to
+                            instantly transform your CV.</p>
                     </div>
-                    
-                    <div class="pt-6 border-t border-slate-100">
-                        <label class="input-label mb-3">Accent Color</label>
-                        <div class="flex flex-wrap gap-3">
-                            <button @click="themeColor = '#ef4444'" class="w-10 h-10 rounded-full bg-red-500 border-2"
-                                :class="themeColor === '#ef4444' ? 'border-dark scale-110' : 'border-transparent'"></button>
-                            <button @click="themeColor = '#3b82f6'" class="w-10 h-10 rounded-full bg-blue-500 border-2"
-                                :class="themeColor === '#3b82f6' ? 'border-dark scale-110' : 'border-transparent'"></button>
-                            <button @click="themeColor = '#10b981'"
-                                class="w-10 h-10 rounded-full bg-emerald-500 border-2"
-                                :class="themeColor === '#10b981' ? 'border-dark scale-110' : 'border-transparent'"></button>
-                            <button @click="themeColor = '#8b5cf6'"
-                                class="w-10 h-10 rounded-full bg-violet-500 border-2"
-                                :class="themeColor === '#8b5cf6' ? 'border-dark scale-110' : 'border-transparent'"></button>
-                            <button @click="themeColor = '#f59e0b'" class="w-10 h-10 rounded-full bg-amber-500 border-2"
-                                :class="themeColor === '#f59e0b' ? 'border-dark scale-110' : 'border-transparent'"></button>
-                            <button @click="themeColor = '#ec4899'" class="w-10 h-10 rounded-full bg-pink-500 border-2"
-                                :class="themeColor === '#ec4899' ? 'border-dark scale-110' : 'border-transparent'"></button>
-                            <button @click="themeColor = '#6366f1'"
-                                class="w-10 h-10 rounded-full bg-indigo-500 border-2"
-                                :class="themeColor === '#6366f1' ? 'border-dark scale-110' : 'border-transparent'"></button>
-                            <button @click="themeColor = '#14b8a6'" class="w-10 h-10 rounded-full bg-teal-500 border-2"
-                                :class="themeColor === '#14b8a6' ? 'border-dark scale-110' : 'border-transparent'"></button>
-                        </div>
-                    </div>
-
-                    <div>
-                        <label class="input-label mt-6 mb-3">Custom Hex Code</label>
-                        <div class="flex gap-2">
-                            <input v-model="themeColor" type="color"
-                                class="h-10 w-12 p-1 rounded cursor-pointer border border-slate-200">
-                            <input v-model="themeColor" type="text" class="form-input py-2 font-mono uppercase"
-                                maxlength="7">
-                        </div>
-                    </div>
+                    <button @click="showTemplateSelector = false"
+                        class="text-slate-400 hover:text-dark transition-all text-xl">
+                        <i class="fa-solid fa-xmark"></i>
+                    </button>
                 </div>
 
-            </div>
-        </div>
-
-        <div v-show="!isMobile || showPreview"
-            class="flex-1 bg-slate-100 md:bg-slate-200 overflow-y-auto overflow-x-hidden p-0 md:p-12 flex justify-center items-start a4-container transition-all duration-300">
-            <div class="a4-page flex flex-col shrink-0 shadow-2xl transition-all duration-300" :class="[currentTemplate, currentTemplate !== 'template-sidebar' ? 'p-12' : 'p-0']">
-
-                <div v-if="currentTemplate !== 'template-sidebar'" class="flex flex-col h-full w-full flex-1">
-                    <header class="flex items-start gap-8 border-b-4 border-dark pb-8 mb-8">
-                        <div v-if="cv.photo" class="shrink-0">
-                            <img :src="cv.photo"
-                                class="w-32 h-32 rounded-lg object-cover border-4 border-slate-50 shadow-lg bg-slate-100">
-                        </div>
-                        <div class="flex-grow pt-2">
-                            <h1 class="text-5xl font-black text-dark tracking-tighter uppercase mb-2 leading-none break-all"
-                                :style="{ color: 'var(--dark)' }">{{ cv.name || 'YOUR NAME' }}</h1>
-                            <p class="text-xl text-brand-600 font-bold uppercase tracking-[4px] mb-6 leading-none">{{
-                                cv.title || 'PROFESSIONAL TITLE' }}</p>
-
-                            <div
-                                class="grid grid-cols-2 gap-x-6 gap-y-2 text-dark text-[10px] font-bold uppercase tracking-wider contact-details">
-                                <div v-if="cv.email" class="flex items-center gap-2"><i
-                                        class="fa-solid fa-envelope text-brand-600 w-4"></i> {{ cv.email }}</div>
-                                <div v-if="cv.phone" class="flex items-center gap-2"><i
-                                        class="fa-solid fa-phone text-brand-600 w-4"></i> {{ cv.phone }}</div>
-                                <div v-if="cv.location" class="flex items-center gap-2"><i
-                                        class="fa-solid fa-location-dot text-brand-600 w-4"></i> {{ cv.location }}</div>
-                                <div v-if="cv.website" class="flex items-center gap-2"><i
-                                        class="fa-solid fa-globe text-brand-600 w-4"></i> {{ cv.website }}</div>
-                                <div v-if="cv.linkedin" class="flex items-center gap-2"><i
-                                        class="fa-brands fa-linkedin text-brand-600 w-4"></i> {{ cv.linkedin }}</div>
-                                <div v-if="cv.github" class="flex items-center gap-2"><i
-                                        class="fa-brands fa-github text-brand-600 w-4"></i> {{ cv.github }}</div>
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-8">
+                    <!-- 1. Classic Pro -->
+                    <!-- 1. Classic Pro -->
+                    <button @click="applyLayout('template-professional')"
+                        class="group flex flex-col gap-4 text-center transition-all">
+                        <div class="aspect-[1/1.41] bg-white rounded-2xl border-2 transition-all p-0 shadow-md relative overflow-hidden group-hover:shadow-xl group-hover:-translate-y-1 flex flex-col"
+                            :class="currentTemplate === 'template-professional' ? 'border-brand-600 ring-4 ring-brand-100 shadow-xl' : 'border-slate-100 hover:border-brand-200'">
+                            <!-- Header -->
+                            <div class="w-full bg-[#2c3e50] h-16 mb-2 flex items-center px-4 gap-3 shrink-0">
+                                <div class="w-10 h-10 bg-slate-400 rounded-lg border-2 border-white/20"></div>
+                                <div class="flex-1 flex flex-col justify-center text-left">
+                                    <div class="text-[8px] font-bold text-white leading-tight">JOHN DOE</div>
+                                    <div
+                                        class="text-[5px] font-bold text-amber-500 uppercase tracking-wider leading-tight">
+                                        Software Engineer</div>
+                                </div>
+                            </div>
+                            <!-- Body -->
+                            <div class="flex gap-4 flex-1 px-4 pb-2 text-left overflow-hidden">
+                                <div class="flex-1 space-y-3">
+                                    <div>
+                                        <div
+                                            class="text-[5px] font-bold uppercase text-slate-800 border-b border-slate-200 mb-1">
+                                            Profile</div>
+                                        <div class="text-[3px] text-slate-500 leading-tight">Experienced developer
+                                            building scalable web applications.</div>
+                                    </div>
+                                    <div>
+                                        <div
+                                            class="text-[5px] font-bold uppercase text-slate-800 border-b border-slate-200 mb-1">
+                                            Experience</div>
+                                        <div class="text-[4px] font-bold text-slate-700">Tech Corp Inc.</div>
+                                        <div class="text-[3px] text-slate-500 mb-0.5">Senior Dev | 2020-Present</div>
+                                        <div class="text-[2px] text-slate-400 leading-tight">Led team of 5 developers.
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- Sidebar right -->
+                                <div class="w-1/3 space-y-3 pt-1 border-l border-slate-100 pl-2">
+                                    <div>
+                                        <div class="text-[5px] font-bold uppercase text-slate-400 mb-1">Contact</div>
+                                        <div class="text-[3px] text-slate-500 font-bold leading-tight truncate">
+                                            john@email.com</div>
+                                        <div class="text-[3px] text-slate-500 font-bold leading-tight">123-456-7890
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <div class="text-[5px] font-bold uppercase text-slate-400 mb-1">Skills</div>
+                                        <div class="flex flex-wrap gap-1">
+                                            <div
+                                                class="bg-slate-100 text-[2px] px-1 py-0.5 rounded text-slate-600 font-bold">
+                                                JAVASCRIPT</div>
+                                            <div
+                                                class="bg-slate-100 text-[2px] px-1 py-0.5 rounded text-slate-600 font-bold">
+                                                VUE</div>
+                                            <div
+                                                class="bg-slate-100 text-[2px] px-1 py-0.5 rounded text-slate-600 font-bold">
+                                                NODE</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Icon Overlay -->
+                            <div v-if="currentTemplate === 'template-professional'"
+                                class="absolute inset-0 bg-brand-600/10 flex items-center justify-center">
+                                <div class="bg-brand-600 text-white p-3 rounded-full shadow-lg"><i
+                                        class="fa-solid fa-check"></i></div>
                             </div>
                         </div>
-                    </header>
+                        <span class="text-xs font-black uppercase tracking-widest"
+                            :class="currentTemplate === 'template-professional' ? 'text-brand-600' : 'text-slate-400 group-hover:text-dark'">Classic
+                            Pro</span>
+                    </button>
 
-                    <div class="grid grid-cols-12 gap-10 flex-1">
-                        <div class="col-span-8 space-y-8">
+                    <!-- 2. Modern Elegant -->
+                    <!-- 2. Modern Elegant -->
+                    <button @click="applyLayout('template-elegant')"
+                        class="group flex flex-col gap-4 text-center transition-all">
+                        <div class="aspect-[1/1.41] bg-white rounded-2xl border-2 transition-all p-0 shadow-md relative overflow-hidden group-hover:shadow-xl group-hover:-translate-y-1 flex flex-col"
+                            :class="currentTemplate === 'template-elegant' ? 'border-teal-600 ring-4 ring-teal-100 shadow-xl' : 'border-slate-100 hover:border-brand-200'">
+                            <!-- Big Header -->
+                            <div
+                                class="w-full bg-teal-600 h-20 flex flex-col items-center justify-center gap-1 shrink-0 px-4 text-center">
+                                <div class="w-8 h-8 bg-teal-800/20 rounded-full border-2 border-teal-400 mb-0.5"></div>
+                                <div class="text-[8px] font-bold text-white leading-tight">SARAH JONES</div>
+                                <div class="w-10 h-0.5 bg-white/30 rounded my-1"></div>
+                                <div class="text-[4px] font-medium text-teal-100 tracking-widest uppercase">Marketing
+                                    Manager</div>
+                            </div>
+                            <!-- Body -->
+                            <div class="flex items-start p-3 gap-3 h-full overflow-hidden text-left">
+                                <div class="w-1/3 space-y-3 pt-1 border-r border-slate-100 pr-2">
+                                    <div>
+                                        <div
+                                            class="text-[4px] font-bold text-teal-600 uppercase border-b border-slate-100 mb-1">
+                                            Skills</div>
+                                        <div class="text-[3px] text-slate-600 font-medium whitespace-pre-line">Strategy
+                                            SEO
+                                            Content
+                                            Ads</div>
+                                    </div>
+                                    <div>
+                                        <div
+                                            class="text-[4px] font-bold text-teal-600 uppercase border-b border-slate-100 mb-1">
+                                            Education</div>
+                                        <div class="text-[3px] text-slate-800 font-bold">MBA</div>
+                                        <div class="text-[2px] text-slate-400">Uni of Tech</div>
+                                    </div>
+                                </div>
+                                <div class="flex-1 space-y-3 pt-1">
+                                    <div>
+                                        <div
+                                            class="text-[4px] font-bold text-teal-600 uppercase border-b border-slate-100 mb-1">
+                                            Profile</div>
+                                        <div class="text-[3px] text-slate-500 italic leading-tight">Creative marketing
+                                            professional with 5+ years experience driving growth for global brands.
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <div
+                                            class="text-[4px] font-bold text-teal-600 uppercase border-b border-slate-100 mb-1">
+                                            Experience</div>
+                                        <div class="text-[3.5px] font-bold text-slate-800">Global Brands Ltd.</div>
+                                        <div class="text-[3px] text-teal-600 font-bold mb-0.5">Marketing Lead</div>
+                                        <div class="text-[2.5px] text-slate-400 leading-tight">Optimized ad campaigns
+                                            increasing ROI by 20%.</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Icon Overlay -->
+                            <div v-if="currentTemplate === 'template-elegant'"
+                                class="absolute inset-0 bg-teal-600/10 flex items-center justify-center">
+                                <div class="bg-teal-600 text-white p-3 rounded-full shadow-lg"><i
+                                        class="fa-solid fa-check"></i></div>
+                            </div>
+                        </div>
+                        <span class="text-xs font-black uppercase tracking-widest text-center"
+                            :class="currentTemplate === 'template-elegant' ? 'text-teal-600' : 'text-slate-400 group-hover:text-dark'">Modern
+                            Elegant</span>
+                    </button>
+
+                    <!-- 3. Business Circular -->
+                    <!-- 3. Business Circular -->
+                    <button @click="applyLayout('template-circular')"
+                        class="group flex flex-col gap-4 text-center transition-all">
+                        <div class="aspect-[1/1.41] bg-white rounded-2xl border-2 transition-all p-0 shadow-md relative overflow-hidden group-hover:shadow-xl group-hover:-translate-y-1 flex"
+                            :class="currentTemplate === 'template-circular' ? 'border-blue-600 ring-4 ring-blue-100 shadow-xl' : 'border-slate-100 hover:border-brand-200'">
+                            <!-- Sidebar -->
+                            <div
+                                class="w-[34%] bg-blue-50 h-full flex flex-col items-center pt-4 gap-2 px-2 border-r border-blue-100 shrink-0">
+                                <div class="w-10 h-10 rounded-full bg-blue-200 border-2 border-white mb-1 shadow-sm">
+                                </div>
+                                <div class="text-[6px] font-black text-slate-800 leading-none text-center">ALEX LEE
+                                </div>
+                                <div class="w-6 h-0.5 bg-blue-400 rounded-full my-1"></div>
+                                <div
+                                    class="text-[3px] font-black text-blue-600 uppercase tracking-wider text-center mb-3">
+                                    Graphic Designer</div>
+
+                                <div class="w-full space-y-2 px-1 text-left">
+                                    <div>
+                                        <div
+                                            class="text-[3px] font-black uppercase text-blue-300 tracking-widest mb-1 flex gap-0.5 items-center">
+                                            <div class="w-0.5 h-0.5 bg-blue-400 rounded-full"></div> Contact
+                                        </div>
+                                        <div class="text-[3px] font-bold text-slate-500 truncate">alex@design.com</div>
+                                        <div class="text-[3px] font-bold text-slate-500">555-0123</div>
+                                    </div>
+                                    <div>
+                                        <div
+                                            class="text-[3px] font-black uppercase text-blue-300 tracking-widest mb-1 flex gap-0.5 items-center">
+                                            <div class="w-0.5 h-0.5 bg-blue-400 rounded-full"></div> Skills
+                                        </div>
+                                        <div class="flex flex-wrap gap-1">
+                                            <div
+                                                class="bg-white border border-blue-100 text-[2.5px] px-1 py-0.5 rounded text-slate-700 font-bold uppercase">
+                                                Ps</div>
+                                            <div
+                                                class="bg-white border-blue-100 border text-[2.5px] px-1 py-0.5 rounded text-slate-700 font-bold uppercase">
+                                                Ai</div>
+                                            <div
+                                                class="bg-white border-blue-100 border text-[2.5px] px-1 py-0.5 rounded text-slate-700 font-bold uppercase">
+                                                Id</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Body -->
+                            <div class="flex-1 p-3 space-y-4 pt-4 overflow-hidden text-left">
+                                <div>
+                                    <div
+                                        class="text-[8px] font-black text-blue-800 uppercase tracking-tighter mb-1.5 flex items-center gap-1.5">
+                                        <div class="w-2.5 h-0.5 bg-blue-600"></div> Profile
+                                    </div>
+                                    <div class="text-[3.5px] text-slate-600 leading-tight">Creative designer with a
+                                        focus on branding and UI/UX. Passionate about visual storytelling.</div>
+                                </div>
+                                <div>
+                                    <div
+                                        class="text-[8px] font-black text-blue-800 uppercase tracking-tighter mb-1.5 flex items-center gap-1.5">
+                                        <div class="w-2.5 h-0.5 bg-blue-600"></div> Experience
+                                    </div>
+                                    <div class="pl-2 border-l-2 border-blue-100 relative">
+                                        <div class="absolute -left-[4.5px] top-1 w-1.5 h-1.5 bg-blue-500 rounded-full">
+                                        </div>
+                                        <div class="text-[4px] font-bold text-slate-800">Studio X</div>
+                                        <div class="text-[3px] font-bold text-blue-600 mb-0.5">Lead Designer</div>
+                                        <div class="text-[2.5px] text-slate-500">Managed design projects.</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Icon Overlay -->
+                            <div v-if="currentTemplate === 'template-circular'"
+                                class="absolute inset-0 bg-blue-600/10 flex items-center justify-center">
+                                <div class="bg-blue-600 text-white p-3 rounded-full shadow-lg"><i
+                                        class="fa-solid fa-check"></i></div>
+                            </div>
+                        </div>
+                        <span class="text-xs font-black uppercase tracking-widest text-center"
+                            :class="currentTemplate === 'template-circular' ? 'text-blue-600' : 'text-slate-400 group-hover:text-dark'">Business
+                            Circular</span>
+                    </button>
+
+                    <!-- 4. Bold Modern -->
+                    <!-- 4. Bold Modern -->
+                    <button @click="applyLayout('template-modern')"
+                        class="group flex flex-col gap-4 text-center transition-all">
+                        <div class="aspect-[1/1.41] bg-white rounded-2xl border-2 transition-all p-0 shadow-md relative overflow-hidden group-hover:shadow-xl group-hover:-translate-y-1 flex"
+                            :class="currentTemplate === 'template-modern' ? 'border-dark ring-4 ring-slate-100 shadow-xl' : 'border-slate-100 hover:border-brand-200'">
+                            <!-- Sidebar -->
+                            <div class="w-[35%] bg-[#1a1a1a] h-full flex flex-col p-3 gap-3 text-white shrink-0">
+                                <div class="w-full aspect-square bg-slate-700/50 rounded-sm mb-1"></div>
+                                <div>
+                                    <div
+                                        class="text-[3px] font-black text-amber-500 tracking-widest uppercase mb-1 border-b border-white/10 pb-0.5">
+                                        Contact</div>
+                                    <div class="text-[2.5px] font-bold opacity-80 mb-0.5">email@test.com</div>
+                                    <div class="text-[2.5px] font-bold opacity-80">123-456-7890</div>
+                                </div>
+                                <div>
+                                    <div
+                                        class="text-[3px] font-black text-amber-500 tracking-widest uppercase mb-1 border-b border-white/10 pb-0.5">
+                                        Awards</div>
+                                    <div class="text-[2.5px] font-bold opacity-80 leading-tight">Best Coder 2024</div>
+                                </div>
+                            </div>
+                            <!-- Body -->
+                            <div class="flex-1 flex flex-col p-3 gap-3 overflow-hidden text-left">
+                                <div class="border-b-[2px] border-black pb-1.5">
+                                    <div class="text-[10px] font-black text-[#1a1a1a] leading-[0.85] tracking-tighter">
+                                        DAVID<br><span class="text-slate-300">KING</span></div>
+                                    <div class="text-[3px] font-black text-amber-600 uppercase tracking-widest mt-1">
+                                        Product Manager</div>
+                                </div>
+                                <div class="flex gap-2 h-full">
+                                    <div class="flex-1 space-y-3">
+                                        <div>
+                                            <div
+                                                class="text-[3px] font-black uppercase tracking-widest text-slate-400 mb-1.5 italic border-b border-slate-100 pb-0.5">
+                                                Expertise</div>
+                                            <div class="space-y-2">
+                                                <div>
+                                                    <div
+                                                        class="text-[4px] font-black text-[#1a1a1a] uppercase leading-none">
+                                                        Tech Solutions</div>
+                                                    <div
+                                                        class="text-[3px] font-black text-amber-700 uppercase tracking-widest">
+                                                        Manager</div>
+                                                    <div
+                                                        class="text-[2.5px] text-slate-500 leading-tight mt-0.5 text-justify">
+                                                        Oversaw product roadmap and team.</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Icon Overlay -->
+                            <div v-if="currentTemplate === 'template-modern'"
+                                class="absolute inset-0 bg-dark/10 flex items-center justify-center">
+                                <div class="bg-dark text-white p-3 rounded-full shadow-lg"><i
+                                        class="fa-solid fa-check"></i></div>
+                            </div>
+                        </div>
+                        <span class="text-xs font-black uppercase tracking-widest text-center"
+                            :class="currentTemplate === 'template-modern' ? 'text-dark' : 'text-slate-400 group-hover:text-dark'">Bold
+                            Modern</span>
+                    </button>
+                </div>
+            </div>
+            <div id="cv-preview" class="a4-page shadow-2xl relative bg-white overflow-hidden"
+                :class="[currentTemplate]">
+
+                <!-- NEW ROBUST TEMPLATE STRUCTURES -->
+                <div class="template-wrapper h-full flex flex-col origin-top transition-transform duration-200"
+                    :style="{ transform: 'scale(' + cvScale + ')', width: (1/cvScale * 100) + '%' }">
+
+                    <!-- 1. TEMPLATE PROFESSIONAL (Sidebar Right) -->
+                    <div v-if="currentTemplate === 'template-professional'" class="flex-1 flex flex-col p-12">
+                        <header class="bg-[#2c3e50] text-white p-10 -m-12 mb-10 flex items-center gap-8 no-shrink">
+                            <img v-if="cv.photo" :src="cv.photo"
+                                class="w-32 h-32 rounded-lg object-cover border-4 border-white/20">
+                            <div>
+                                <h1>{{ cv.name || 'YOUR NAME' }}</h1>
+                                <p class="text-xl font-bold text-amber-400 uppercase tracking-widest">{{
+                                    cv.title ||
+                                    'TITLE' }}</p>
+                            </div>
+                        </header>
+                        <div class="flex-grow mt-8">
+                            <div class="grid grid-cols-3 gap-10 h-full pr-2">
+                                <div class="col-span-2 space-y-8">
+                                    <section v-if="cv.summary">
+                                        <h2 class="text-xl font-black uppercase border-b-2 border-dark pb-1 mb-3">
+                                            Profile
+                                        </h2>
+                                        <p class="text-sm leading-relaxed text-slate-700 break-words">{{ cv.summary }}
+                                        </p>
+                                    </section>
+                                    <section v-if="cv.experience.length">
+                                        <h2 class="text-xl font-black uppercase border-b-2 border-dark pb-1 mb-4">
+                                            Experience
+                                        </h2>
+                                        <div v-for="job in cv.experience" class="mb-5">
+                                            <h3 class="font-bold text-lg text-dark leading-none">{{
+                                                job.company }}</h3>
+                                            <p class="text-xs font-bold text-amber-600 uppercase mb-2">{{
+                                                job.position
+                                                }} |
+                                                {{ job.start }} - {{ job.end }}</p>
+                                            <p
+                                                class="text-sm text-slate-600 whitespace-pre-line leading-relaxed break-words">
+                                                {{
+                                                job.description }}</p>
+                                        </div>
+                                    </section>
+                                    <section v-if="cv.projects.length">
+                                        <h2 class="text-xl font-black uppercase border-b-2 border-dark pb-1 mb-4">
+                                            Projects
+                                        </h2>
+                                        <div v-for="proj in cv.projects" class="mb-4">
+                                            <h3 class="font-bold text-base text-dark leading-none mb-1">{{
+                                                proj.name }}
+                                            </h3>
+                                            <p class="text-xs text-slate-600 break-words">{{ proj.description }}</p>
+                                        </div>
+                                    </section>
+                                </div>
+                                <div class="space-y-8">
+                                    <section>
+                                        <h2 class="text-lg font-black uppercase text-slate-400 mb-3">Contact
+                                        </h2>
+                                        <div class="space-y-2 text-[11px] font-bold text-slate-600 break-words">
+                                            <p v-if="cv.email" class="flex gap-2"><i
+                                                    class="fa-solid fa-envelope text-dark w-4 mt-1"></i>
+                                                <span class="flex-1">{{ cv.email }}</span>
+                                            </p>
+                                            <p v-if="cv.phone" class="flex gap-2"><i
+                                                    class="fa-solid fa-phone text-dark w-4 mt-1"></i> <span
+                                                    class="flex-1">{{ cv.phone }}</span></p>
+                                            <p v-if="cv.location" class="flex gap-2"><i
+                                                    class="fa-solid fa-location-dot text-dark w-4 mt-1"></i>
+                                                <span class="flex-1">{{ cv.location }}</span>
+                                            </p>
+                                            <p v-if="cv.linkedin" class="flex gap-2"><i
+                                                    class="fa-brands fa-linkedin text-dark w-4 mt-1"></i>
+                                                <span class="flex-1">{{ cv.linkedin }}</span>
+                                            </p>
+                                            <p v-if="cv.github" class="flex gap-2"><i
+                                                    class="fa-brands fa-github text-dark w-4 mt-1"></i>
+                                                <span class="flex-1">{{ cv.github }}</span>
+                                            </p>
+                                            <p v-if="cv.website" class="flex gap-2"><i
+                                                    class="fa-solid fa-globe text-dark w-4 mt-1"></i> <span
+                                                    class="flex-1">{{ cv.website }}</span></p>
+                                        </div>
+                                    </section>
+                                    <section v-if="cv.skills.length">
+                                        <h2 class="text-lg font-black uppercase text-slate-400 mb-3">Skills
+                                        </h2>
+                                        <div class="flex flex-wrap gap-2">
+                                            <span v-for="skill in cv.skills"
+                                                class="bg-slate-100 text-[10px] px-2 py-1 rounded font-bold uppercase">{{
+                                                skill }}</span>
+                                        </div>
+                                    </section>
+                                    <section v-if="cv.education.length">
+                                        <h2 class="text-lg font-black uppercase text-slate-400 mb-3">
+                                            Education</h2>
+                                        <div v-for="edu in cv.education" class="mb-3">
+                                            <p class="font-bold text-sm leading-tight uppercase">{{
+                                                edu.degree }}</p>
+                                            <p class="text-[10px] text-slate-500 font-bold italic">{{
+                                                edu.institution }}
+                                            </p>
+                                        </div>
+                                    </section>
+                                    <section v-if="cv.languages.length">
+                                        <h2 class="text-lg font-black uppercase text-slate-400 mb-3">
+                                            Languages</h2>
+                                        <div v-for="lang in cv.languages" class="flex justify-between text-[11px] mb-1">
+                                            <span class="font-bold">{{ lang.language }}</span>
+                                            <span class="text-slate-400 italic text-[10px]">{{
+                                                lang.proficiency
+                                                }}</span>
+                                        </div>
+                                    </section>
+                                    <section v-if="cv.certifications.length">
+                                        <h2 class="text-lg font-black uppercase text-slate-400 mb-3">
+                                            Certifications</h2>
+                                        <div v-for="cert in cv.certifications" class="mb-3">
+                                            <p class="font-bold text-[11px] leading-tight uppercase">{{
+                                                cert.name }}</p>
+                                            <p class="text-[9px] text-slate-400 font-bold">{{ cert.issuer }}
+                                            </p>
+                                        </div>
+                                    </section>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 2. TEMPLATE CIRCULAR (Modern Sidebar) -->
+                    <div v-else-if="currentTemplate === 'template-circular'" class="flex-1 flex">
+                        <div
+                            class="w-[34%] bg-[#e3f2fd] p-10 flex flex-col gap-10 shadow-inner border-r border-blue-100">
+                            <!-- Sidebar Profile -->
+                            <div class="flex flex-col items-center">
+                                <img v-if="cv.photo" :src="cv.photo"
+                                    class="w-32 h-32 rounded-full object-cover border-4 border-white shadow-xl mb-6">
+                                <h1 class="text-center text-2xl font-black text-dark leading-tight tracking-tighter">
+                                    {{
+                                    cv.name || 'YOUR NAME' }}</h1>
+                                <div class="w-10 h-1 bg-blue-500 my-3 rounded-full"></div>
+                                <p
+                                    class="text-center text-[11px] font-black text-blue-600 uppercase tracking-[0.2em] px-2 leading-tight">
+                                    {{ cv.title || 'PROFESSIONAL TITLE' }}</p>
+                            </div>
+
+                            <!-- Sidebar Section: Contact -->
+                            <section>
+                                <h2
+                                    class="text-sm font-black uppercase tracking-widest text-blue-900/40 mb-5 flex items-center gap-2">
+                                    <i class="fa-solid fa-address-card text-[10px]"></i> Contact
+                                </h2>
+                                <div class="space-y-4 text-[12px] font-bold text-slate-600 break-words">
+                                    <div v-if="cv.email" class="flex gap-3">
+                                        <i class="fa-solid fa-envelope text-blue-500 w-4 mt-1"></i>
+                                        <span class="flex-1">{{ cv.email }}</span>
+                                    </div>
+                                    <div v-if="cv.phone" class="flex gap-3">
+                                        <i class="fa-solid fa-phone text-blue-500 w-4 mt-1"></i>
+                                        <span class="flex-1">{{ cv.phone }}</span>
+                                    </div>
+                                    <div v-if="cv.location" class="flex gap-3">
+                                        <i class="fa-solid fa-location-dot text-blue-500 w-4 mt-1"></i>
+                                        <span class="flex-1">{{ cv.location }}</span>
+                                    </div>
+                                    <div v-if="cv.linkedin" class="flex gap-3">
+                                        <i class="fa-brands fa-linkedin text-blue-500 w-4 mt-1"></i>
+                                        <span class="flex-1">{{ cv.linkedin }}</span>
+                                    </div>
+                                    <div v-if="cv.github" class="flex gap-3">
+                                        <i class="fa-brands fa-github text-blue-500 w-4 mt-1"></i>
+                                        <span class="flex-1">{{ cv.github }}</span>
+                                    </div>
+                                    <div v-if="cv.website" class="flex gap-3">
+                                        <i class="fa-solid fa-globe text-blue-500 w-4 mt-1"></i>
+                                        <span class="flex-1">{{ cv.website }}</span>
+                                    </div>
+                                </div>
+                            </section>
+
+                            <!-- Sidebar Section: Skills -->
+                            <section>
+                                <h2
+                                    class="text-sm font-black uppercase tracking-widest text-blue-900/40 mb-5 flex items-center gap-2">
+                                    <i class="fa-solid fa-bolt text-[10px]"></i> Skills
+                                </h2>
+                                <div class="flex flex-wrap gap-2">
+                                    <span v-for="skill in cv.skills"
+                                        class="bg-white text-dark text-[10px] px-3 py-1.5 rounded-lg shadow-sm border border-blue-50 font-black uppercase tracking-wider">
+                                        {{ skill }}
+                                    </span>
+                                </div>
+                            </section>
+
+                            <!-- Sidebar Section: Education -->
+                            <section>
+                                <h2
+                                    class="text-sm font-black uppercase tracking-widest text-blue-900/40 mb-5 flex items-center gap-2">
+                                    <i class="fa-solid fa-graduation-cap text-[10px]"></i> Education
+                                </h2>
+                                <div class="space-y-5">
+                                    <div v-for="edu in cv.education" class="group">
+                                        <p
+                                            class="font-black text-[13px] text-dark leading-tight group-hover:text-blue-600 transition-colors uppercase">
+                                            {{ edu.degree }}</p>
+                                        <p class="text-[11px] text-slate-500 font-bold mt-1 italic opacity-80">
+                                            {{
+                                            edu.institution }}</p>
+                                    </div>
+                                </div>
+                            </section>
+
+                            <!-- Sidebar Section: Languages -->
+                            <section v-if="cv.languages.length">
+                                <h2
+                                    class="text-sm font-black uppercase tracking-widest text-blue-900/40 mb-5 flex items-center gap-2">
+                                    <i class="fa-solid fa-language text-[10px]"></i> Languages
+                                </h2>
+                                <div class="space-y-3">
+                                    <div v-for="lang in cv.languages"
+                                        class="flex justify-between items-center text-[11px] font-bold text-slate-600">
+                                        <span>{{ lang.language }}</span>
+                                        <span class="text-[9px] text-blue-500 uppercase">{{ lang.proficiency
+                                            }}</span>
+                                    </div>
+                                </div>
+                            </section>
+                        </div>
+                        <div class="flex-1 p-12 space-y-10 min-w-0">
+                            <!-- Section: Profile -->
                             <section v-if="cv.summary">
                                 <h2
-                                    class="text-sm font-black uppercase tracking-[3px] text-dark mb-3 flex items-center gap-3">
-                                    <span class="w-8 h-1 bg-brand-600"></span> Profile
+                                    class="text-2xl font-black text-blue-800 uppercase tracking-tighter mb-4 flex items-center gap-3">
+                                    <span class="w-8 h-1 bg-blue-600"></span> Profile
                                 </h2>
-                                <p class="text-slate-700 text-justify text-xs leading-6 font-medium">{{ cv.summary }}</p>
+                                <p class="text-sm leading-relaxed text-slate-700 break-words">{{ cv.summary }}</p>
                             </section>
 
-                            <section v-if="cv.experience.length > 0">
+                            <!-- Section: Experience -->
+                            <section v-if="cv.experience.length">
                                 <h2
-                                    class="text-sm font-black uppercase tracking-[3px] text-dark mb-5 flex items-center gap-3">
-                                    <span class="w-8 h-1 bg-brand-600"></span> Experience
+                                    class="text-2xl font-black text-blue-800 uppercase tracking-tighter mb-6 flex items-center gap-3">
+                                    <span class="w-8 h-1 bg-blue-600"></span> Experience
                                 </h2>
-                                <div v-for="(job, index) in cv.experience" :key="index"
-                                    class="mb-6 last:mb-0 relative pl-4 border-l-2 border-slate-100">
-                                    <div class="absolute -left-[5px] top-1.5 w-2 h-2 rounded-full bg-brand-600"></div>
-                                    <div class="flex justify-between items-baseline mb-1">
-                                        <h3 class="font-bold text-dark text-lg uppercase tracking-tight leading-none">{{
-                                            job.company }}</h3>
-                                        <span
-                                            class="text-[9px] font-black bg-slate-100 text-slate-500 px-2 py-0.5 rounded">{{
-                                            job.start }} - {{ job.end }}</span>
-                                    </div>
-                                    <div class="text-brand-600 font-bold text-xs uppercase tracking-widest mb-2">{{
-                                        job.position }}</div>
-                                    <p class="text-slate-600 text-xs whitespace-pre-line leading-relaxed font-medium">{{
-                                        job.description }}</p>
-                                </div>
-                            </section>
-
-                            <section v-if="cv.projects.length > 0">
-                                 <h2 class="text-sm font-black text-[#324458] border-b-[2px] border-[#324458] pb-1 mb-3 uppercase tracking-wider">Projects</h2>
-                                 <div class="space-y-4">
-                             <div v-for="(proj, index) in cv.projects" :key="index">
-                            <div class="font-bold text-xs text-dark">{{ proj.name }}</div>
-                             <div v-if="proj.link" class="text-[9px] text-brand-600 mb-1 break-all">{{ proj.link }}</div>
-                              <p class="text-[10px] text-slate-600 mt-0.5 leading-snug whitespace-pre-line">{{ proj.description }}</p>
-                              </div>
-                           </div>
-                         </section>
-                        </div>
-
-                        <div class="col-span-4 space-y-8">
-                            <section v-if="cv.skills.length > 0">
-                                <h2
-                                    class="text-sm font-black uppercase tracking-[2px] text-dark mb-4 border-b-2 border-brand-600 pb-1">
-                                    Skills</h2>
-                                <div class="flex flex-wrap gap-2">
-                                    <div v-for="skill in cv.skills" :key="skill"
-                                        class="bg-dark text-white text-[10px] px-2 py-1 rounded font-bold uppercase tracking-wider">
-                                        {{ skill }}
-                                    </div>
-                                </div>
-                            </section>
-
-                            <section v-if="cv.education.length > 0">
-                                <h2
-                                    class="text-sm font-black uppercase tracking-[2px] text-dark mb-4 border-b-2 border-brand-600 pb-1">
-                                    Education</h2>
-                                <div class="flex flex-col gap-4">
-                                    <div v-for="(edu, index) in cv.education" :key="index">
-                                        <div class="font-bold text-dark text-xs uppercase leading-tight">{{ edu.degree }}
+                                <div class="space-y-6">
+                                    <div v-for="job in cv.experience" class="relative pl-6 border-l-2 border-blue-50">
+                                        <div
+                                            class="absolute -left-[7px] top-1.5 w-3 h-3 rounded-full bg-blue-500 shadow-sm shadow-blue-200">
                                         </div>
-                                        <div class="text-[10px] text-slate-500 font-bold mt-0.5">{{ edu.institution }}</div>
-                                        <div class="text-[9px] text-brand-600 font-black mt-0.5">{{ edu.start }} - {{
-                                            edu.end }}</div>
+                                        <h3 class="font-bold text-lg text-dark leading-none">{{ job.company
+                                            }}</h3>
+                                        <p class="text-xs font-bold text-blue-600 mt-1 mb-2">{{ job.position
+                                            }} | {{
+                                            job.start }} - {{ job.end }}</p>
+                                        <p class="text-sm text-slate-600 whitespace-pre-line break-words">{{
+                                            job.description }}
+                                        </p>
                                     </div>
                                 </div>
                             </section>
 
-                            <section v-if="cv.languages.length > 0">
+                            <!-- Section: Projects -->
+                            <section v-if="cv.projects && cv.projects.length">
                                 <h2
-                                    class="text-sm font-black uppercase tracking-[2px] text-dark mb-4 border-b-2 border-brand-600 pb-1">
-                                    Languages</h2>
-                                <div class="space-y-2">
-                                    <div v-for="(lang, index) in cv.languages" :key="index"
-                                        class="flex justify-between items-center border-b border-slate-100 pb-1 mb-1 last:border-0 last:mb-0 last:pb-0">
-                                        <span class="text-xs font-bold text-dark">{{ lang.language }}</span>
-                                        <span class="text-[9px] text-brand-600 font-bold uppercase">{{ lang.proficiency
+                                    class="text-2xl font-black text-blue-800 uppercase tracking-tighter mb-6 flex items-center gap-3">
+                                    <span class="w-8 h-1 bg-blue-600"></span> Projects
+                                </h2>
+                                <div class="grid grid-cols-1 gap-4">
+                                    <div v-for="proj in cv.projects"
+                                        class="bg-blue-50/50 p-5 rounded-xl border border-blue-100">
+                                        <h3 class="font-bold text-dark text-lg leading-none mb-2">{{
+                                            proj.name }}
+                                        </h3>
+                                        <p class="text-sm text-slate-600 leading-relaxed break-words">{{
+                                            proj.description }}</p>
+                                    </div>
+                                </div>
+                            </section>
+
+                            <!-- Section: Certifications -->
+                            <section v-if="cv.certifications && cv.certifications.length">
+                                <h2
+                                    class="text-2xl font-black text-blue-800 uppercase tracking-tighter mb-6 flex items-center gap-3">
+                                    <span class="w-8 h-1 bg-blue-600"></span> Certifications
+                                </h2>
+                                <div class="grid grid-cols-2 gap-4">
+                                    <div v-for="cert in cv.certifications" class="mb-4">
+                                        <p class="font-bold text-dark text-sm leading-tight uppercase">{{
+                                            cert.name
+                                            }}
+                                        </p>
+                                        <p class="text-[11px] text-blue-600 font-bold mt-1">{{ cert.issuer
+                                            }} ({{
+                                            cert.year }})</p>
+                                    </div>
+                                </div>
+                            </section>
+                        </div>
+                    </div>
+
+                    <!-- 3. TEMPLATE ELEGANT (Teal Accented) -->
+                    <div v-else-if="currentTemplate === 'template-elegant'" class="flex-1 flex flex-col">
+                        <header class="bg-[#5f9ea0] text-white p-14 flex flex-col items-center gap-4">
+                            <img v-if="cv.photo" :src="cv.photo"
+                                class="w-32 h-32 rounded-full object-cover border-4 border-white/20 shadow-2xl mb-2">
+                            <h1 class="text-5xl font-bold tracking-tight text-center">{{ cv.name || 'YOUR NAME' }}
+                            </h1>
+                            <div class="w-16 h-1 bg-white/30 rounded"></div>
+                            <p class="text-lg font-medium opacity-90 uppercase tracking-[0.4em]">{{ cv.title
+                                ||
+                                'PROFESSIONAL TITLE' }}</p>
+                            <div class="flex flex-wrap justify-center gap-x-6 gap-y-2 mt-2 text-xs opacity-80">
+                                <span v-if="cv.email"><i class="fa-solid fa-envelope mr-1"></i> {{ cv.email
+                                    }}</span>
+                                <span v-if="cv.phone"><i class="fa-solid fa-phone mr-1"></i> {{ cv.phone
+                                    }}</span>
+                                <span v-if="cv.location"><i class="fa-solid fa-location-dot mr-1"></i> {{
+                                    cv.location
+                                    }}</span>
+                                <span v-if="cv.linkedin"><i class="fa-brands fa-linkedin mr-1"></i> {{
+                                    cv.linkedin
+                                    }}</span>
+                                <span v-if="cv.github"><i class="fa-brands fa-github mr-1"></i> {{ cv.github
+                                    }}</span>
+                                <span v-if="cv.website"><i class="fa-solid fa-globe mr-1"></i> {{ cv.website
+                                    }}</span>
+                            </div>
+                        </header>
+                        <div class="flex-grow flex flex-col">
+                            <div class="flex-grow p-12 grid grid-cols-12 gap-12 bg-white">
+                                <div class="col-span-4 space-y-10">
+                                    <section>
+                                        <h2
+                                            class="text-sm font-bold text-[#5f9ea0] uppercase tracking-widest border-b border-slate-100 pb-2 mb-4">
+                                            Core Skills</h2>
+                                        <div class="space-y-2">
+                                            <div v-for="skill in cv.skills"
+                                                class="flex justify-between items-center text-xs">
+                                                <span class="text-slate-600 font-medium">{{ skill }}</span>
+                                                <div class="flex gap-1">
+                                                    <div class="w-2 h-2 rounded-full bg-[#5f9ea0]"></div>
+                                                    <div class="w-2 h-2 rounded-full bg-[#5f9ea0]"></div>
+                                                    <div class="w-2 h-2 rounded-full bg-slate-100"></div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </section>
+                                    <section>
+                                        <h2
+                                            class="text-sm font-bold text-[#5f9ea0] uppercase tracking-widest border-b border-slate-100 pb-2 mb-4">
+                                            Education</h2>
+                                        <div v-for="edu in cv.education" class="mb-4">
+                                            <p class="font-bold text-dark text-xs uppercase">{{ edu.degree
+                                                }}</p>
+                                            <p class="text-[10px] text-slate-400">{{ edu.institution }}</p>
+                                        </div>
+                                    </section>
+                                    <section v-if="cv.languages.length">
+                                        <h2
+                                            class="text-sm font-bold text-[#5f9ea0] uppercase tracking-widest border-b border-slate-100 pb-2 mb-4">
+                                            Languages</h2>
+                                        <div v-for="lang in cv.languages" class="flex justify-between text-xs mb-2">
+                                            <span class="text-slate-600 font-bold uppercase">{{
+                                                lang.language
+                                                }}</span>
+                                            <span class="text-[#5f9ea0] font-black text-[10px]">{{
+                                                lang.proficiency
+                                                }}</span>
+                                        </div>
+                                    </section>
+                                    <section v-if="cv.certifications.length">
+                                        <h2
+                                            class="text-sm font-bold text-[#5f9ea0] uppercase tracking-widest border-b border-slate-100 pb-2 mb-4">
+                                            Certifications</h2>
+                                        <div v-for="cert in cv.certifications" class="mb-3">
+                                            <p class="font-bold text-dark text-[11px] uppercase">{{
+                                                cert.name }}</p>
+                                            <p class="text-[10px] text-slate-400 font-bold">{{ cert.issuer
+                                                }}</p>
+                                        </div>
+                                    </section>
+                                </div>
+                                <div class="col-span-8 space-y-10">
+                                    <section>
+                                        <h2
+                                            class="text-sm font-bold text-[#5f9ea0] uppercase tracking-widest border-b border-slate-100 pb-2 mb-4">
+                                            About Me</h2>
+                                        <p class="text-sm leading-relaxed text-slate-600 italic break-words">{{
+                                            cv.summary }}
+                                        </p>
+                                    </section>
+                                    <section>
+                                        <h2
+                                            class="text-sm font-bold text-[#5f9ea0] uppercase tracking-widest border-b border-slate-100 pb-2 mb-4">
+                                            Work Experience</h2>
+                                        <div v-for="job in cv.experience" class="mb-6">
+                                            <div class="flex justify-between mb-1">
+                                                <h3 class="font-bold text-dark text-base">{{ job.company }}
+                                                </h3>
+                                                <span class="text-xs text-slate-400">{{ job.start }} - {{
+                                                    job.end
+                                                    }}</span>
+                                            </div>
+                                            <p class="text-xs font-bold text-[#5f9ea0] mb-2">{{ job.position
+                                                }}</p>
+                                            <p class="text-sm text-slate-600 leading-snug break-words">{{
+                                                job.description }}</p>
+                                        </div>
+                                    </section>
+                                    <section v-if="cv.projects.length">
+                                        <h2
+                                            class="text-sm font-bold text-[#5f9ea0] uppercase tracking-widest border-b border-slate-100 pb-2 mb-4">
+                                            Key Projects</h2>
+                                        <div class="grid grid-cols-1 gap-4">
+                                            <div v-for="proj in cv.projects"
+                                                class="bg-slate-50 p-4 rounded-lg border-l-4 border-[#5f9ea0]">
+                                                <h3 class="font-bold text-dark text-sm leading-none mb-2 capitalize">
+                                                    {{
+                                                    proj.name }}</h3>
+                                                <p class="text-xs text-slate-600 leading-relaxed break-words">{{
+                                                    proj.description }}</p>
+                                            </div>
+                                        </div>
+                                    </section>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 4. TEMPLATE MODERN (Dark Lateral Sidebar) -->
+                    <div v-else-if="currentTemplate === 'template-modern'" class="flex-1 flex overflow-hidden">
+                        <div
+                            class="w-[35%] bg-[#1a1a1a] text-white p-10 flex flex-col gap-10 overflow-hidden shadow-2xl min-w-0">
+                            <div v-if="cv.photo">
+                                <img :src="cv.photo"
+                                    class="w-full aspect-square object-cover rounded-sm shadow-xl mb-6 grayscale hover:grayscale-0 transition-all duration-700">
+                            </div>
+
+                            <!-- Sidebar: Contact -->
+                            <section
+                                v-if="cv.email || cv.phone || cv.location || cv.linkedin || cv.github || cv.website">
+                                <h2
+                                    class="text-[10px] font-black uppercase text-amber-500 tracking-[0.4em] mb-6 border-b border-white/5 pb-2">
+                                    Contact</h2>
+                                <div class="space-y-4 break-words">
+                                    <div v-if="cv.email" class="flex flex-col min-w-0">
+                                        <span class="text-[8px] text-white/30 uppercase font-black mb-1"><i
+                                                class="fa-solid fa-envelope mr-1"></i> Email</span>
+                                        <span class="text-[11px] font-bold break-all tracking-tight">{{
+                                            cv.email
+                                            }}</span>
+                                    </div>
+                                    <div v-if="cv.phone" class="flex flex-col min-w-0">
+                                        <span class="text-[8px] text-white/30 uppercase font-black mb-1"><i
+                                                class="fa-solid fa-phone mr-1"></i> Phone</span>
+                                        <span class="text-[11px] font-bold tracking-tight">{{ cv.phone
+                                            }}</span>
+                                    </div>
+                                    <div v-if="cv.location" class="flex flex-col min-w-0">
+                                        <span class="text-[8px] text-white/30 uppercase font-black mb-1"><i
+                                                class="fa-solid fa-location-dot mr-1"></i> Location</span>
+                                        <span class="text-[11px] font-bold tracking-tight">{{ cv.location
+                                            }}</span>
+                                    </div>
+                                    <div v-if="cv.linkedin" class="flex flex-col min-w-0">
+                                        <span class="text-[8px] text-white/30 uppercase font-black mb-1"><i
+                                                class="fa-brands fa-linkedin mr-1"></i> LinkedIn</span>
+                                        <span class="text-[11px] font-bold break-all tracking-tight">{{
+                                            cv.linkedin
+                                            }}</span>
+                                    </div>
+                                    <div v-if="cv.github" class="flex flex-col min-w-0">
+                                        <span class="text-[8px] text-white/30 uppercase font-black mb-1"><i
+                                                class="fa-brands fa-github mr-1"></i> GitHub</span>
+                                        <span class="text-[11px] font-bold break-all tracking-tight">{{
+                                            cv.github
+                                            }}</span>
+                                    </div>
+                                    <div v-if="cv.website" class="flex flex-col min-w-0">
+                                        <span class="text-[8px] text-white/30 uppercase font-black mb-1"><i
+                                                class="fa-solid fa-globe mr-1"></i> Website</span>
+                                        <span class="text-[11px] font-bold break-all tracking-tight">{{
+                                            cv.website
                                             }}</span>
                                     </div>
                                 </div>
                             </section>
 
-                            <section v-if="cv.certifications.length > 0">
+                            <!-- Sidebar: Expertise -->
+                            <section v-if="cv.skills.length">
                                 <h2
-                                    class="text-sm font-black uppercase tracking-[2px] text-dark mb-4 border-b-2 border-brand-600 pb-1">
-                                    Certifications</h2>
+                                    class="text-[10px] font-black uppercase text-amber-500 tracking-[0.4em] mb-6 border-b border-white/5 pb-2">
+                                    Expertise</h2>
+                                <div class="flex flex-wrap gap-2">
+                                    <span v-for="skill in cv.skills"
+                                        class="text-[9px] font-black text-white/80 uppercase px-2 py-1 bg-white/5 rounded-sm hover:bg-amber-500 hover:text-black transition-colors">{{
+                                        skill }}</span>
+                                </div>
+                            </section>
+
+                            <!-- Sidebar: Languages -->
+                            <section v-if="cv.languages.length">
+                                <h2
+                                    class="text-[10px] font-black uppercase text-amber-500 tracking-[0.4em] mb-6 border-b border-white/5 pb-2">
+                                    Languages</h2>
                                 <div class="space-y-3">
-                                    <div v-for="(cert, index) in cv.certifications" :key="index">
-                                        <div class="font-bold text-dark text-[10px] uppercase leading-tight">{{ cert.name }}
-                                        </div>
-                                        <div class="flex justify-between items-center mt-0.5">
-                                            <span class="text-[9px] text-slate-500">{{ cert.issuer }}</span>
-                                            <span class="text-[9px] text-brand-600 font-bold">{{ cert.year }}</span>
-                                        </div>
+                                    <div v-for="lang in cv.languages" class="flex justify-between items-center">
+                                        <span class="text-[10px] font-bold uppercase tracking-wider">{{
+                                            lang.language
+                                            }}</span>
+                                        <span class="text-[8px] font-black text-amber-500 tracking-tighter">{{
+                                            lang.proficiency }}</span>
                                     </div>
                                 </div>
                             </section>
+
+                            <!-- Sidebar: Awards -->
+                            <section v-if="cv.certifications.length">
+                                <h2
+                                    class="text-[10px] font-black uppercase text-amber-500 tracking-[0.4em] mb-6 border-b border-white/5 pb-2">
+                                    Awards</h2>
+                                <div v-for="cert in cv.certifications" class="mb-4">
+                                    <p class="text-[10px] font-bold leading-tight uppercase">{{ cert.name }}
+                                    </p>
+                                    <p class="text-[8px] text-white/40 uppercase mt-1 tracking-widest">{{
+                                        cert.issuer }}
+                                    </p>
+                                </div>
+                            </section>
+                        </div>
+
+                        <div class="flex-1 bg-white p-10 flex flex-col gap-8 min-w-0">
+                            <header class="border-b-[6px] border-black pb-6">
+                                <h1 v-if="cv.name"
+                                    class="text-5xl font-black text-dark tracking-tighter leading-[0.85] mb-3">
+                                    {{ cv.name.split(' ')[0] }}<br>
+                                    <span class="text-slate-200">{{ cv.name.split(' ').slice(1).join(' ')
+                                        }}</span>
+                                </h1>
+                                <h1 v-else class="text-5xl font-black text-dark tracking-tighter leading-[0.85] mb-3">
+                                    YOUR<br><span class="text-slate-200">NAME</span>
+                                </h1>
+                                <p class="text-xl font-black text-amber-600 uppercase tracking-[0.2em]">{{
+                                    cv.title ||
+                                    'PROFESSIONAL TITLE' }}</p>
+                            </header>
+
+                            <!-- Main Content: Biography (Full Width) -->
+                            <section v-if="cv.summary" class="mb-10 min-w-0">
+                                <h2
+                                    class="text-[10px] font-black uppercase tracking-[0.6em] text-slate-400 mb-4 italic border-b-2 border-slate-100 pb-2">
+                                    Biography</h2>
+                                <p class="text-sm leading-relaxed text-slate-700 font-medium text-justify break-words">
+                                    {{ cv.summary }}
+                                </p>
+                            </section>
+
+                            <!-- Split Content Area -->
+                            <div class="flex gap-10 flex-1">
+                                <!-- Left Main Column -->
+                                <div class="flex-1 space-y-10 min-w-0">
+
+                                    <!-- Main Content: Experience -->
+                                    <section v-if="cv.experience.length">
+                                        <h2
+                                            class="text-[10px] font-black uppercase tracking-[0.6em] text-slate-400 mb-6 italic border-b-2 border-slate-100 pb-2">
+                                            Professional Journey</h2>
+                                        <div class="space-y-8">
+                                            <div v-for="job in cv.experience" class="group">
+                                                <div class="flex justify-between items-baseline mb-1">
+                                                    <h3
+                                                        class="text-lg font-black text-dark uppercase leading-none tracking-tighter group-hover:text-amber-600 transition-colors">
+                                                        {{ job.company }}</h3>
+                                                    <span
+                                                        class="text-[9px] font-black text-slate-400 uppercase tracking-tighter whitespace-nowrap ml-2">
+                                                        {{ job.start }} - {{ job.end }}
+                                                    </span>
+                                                </div>
+                                                <p
+                                                    class="text-[10px] font-black text-amber-700 uppercase tracking-widest mb-2 inline-block">
+                                                    {{ job.position }}</p>
+                                                <p
+                                                    class="text-xs text-slate-600 leading-relaxed text-justify break-words">
+                                                    {{
+                                                    job.description }}</p>
+                                            </div>
+                                        </div>
+                                    </section>
+                                </div>
+
+                                <!-- Right Main Column -->
+                                <div class="flex-1 space-y-10 min-w-0">
+                                    <!-- Main Content: Projects -->
+                                    <section v-if="cv.projects.length">
+                                        <h2
+                                            class="text-[10px] font-black uppercase tracking-[0.6em] text-slate-400 mb-6 italic border-b-2 border-slate-100 pb-2">
+                                            Key Initiatives</h2>
+                                        <div class="space-y-4">
+                                            <div v-for="proj in cv.projects"
+                                                class="p-5 bg-slate-50 border-l-4 border-dark hover:bg-dark hover:border-amber-500 transition-all duration-300 group">
+                                                <h3
+                                                    class="font-black text-dark text-base uppercase leading-tight mb-2 group-hover:text-white transition-colors">
+                                                    {{ proj.name }}</h3>
+                                                <p
+                                                    class="text-[11px] text-slate-500 leading-relaxed group-hover:text-slate-300 transition-colors break-words">
+                                                    {{ proj.description }}</p>
+                                            </div>
+                                        </div>
+                                    </section>
+
+                                    <!-- Main Content: Education -->
+                                    <section v-if="cv.education.length">
+                                        <h2
+                                            class="text-[10px] font-black uppercase tracking-[0.6em] text-slate-400 mb-6 italic border-b-2 border-slate-100 pb-2">
+                                            Education</h2>
+                                        <div v-for="edu in cv.education"
+                                            class="mb-5 pb-4 border-b border-slate-100 last:border-0">
+                                            <h3 class="font-black text-dark text-base uppercase tracking-tighter mb-1">
+                                                {{ edu.degree }}</h3>
+                                            <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">
+                                                {{ edu.institution }}</p>
+                                            <p class="text-[9px] font-black text-slate-300 uppercase mt-1">{{ edu.start
+                                                }} - {{ edu.end }}</p>
+                                        </div>
+                                    </section>
+                                </div>
+                            </div>
                         </div>
                     </div>
 
-                    <div class="mt-auto pt-6 border-t border-slate-100 flex justify-between items-center text-[8px] text-slate-300 font-black uppercase tracking-widest italic">
+                    <!-- CV Footer -->
+                    <div
+                        class="mt-auto pt-6 border-t border-slate-100 flex justify-between items-center text-[8px] text-slate-300 font-black uppercase tracking-widest italic no-print p-6">
                         <p>Generated by CV Master</p>
                         <div class="flex gap-1">
                             <div class="w-8 h-1 bg-brand-600"></div>
@@ -593,128 +1625,11 @@
                         </div>
                     </div>
                 </div>
-
-                <div v-if="currentTemplate === 'template-sidebar'" class="flex w-full min-h-full h-full bg-white text-left font-sans">
-                    
-                    <div class="w-[35%] py-12 px-8 flex flex-col items-center gap-8 shrink-0 transition-colors duration-300" :style="{ backgroundColor: themeColor }">
-                        
-                        <div class="text-center w-full">
-                            <div v-if="cv.photo" class="mx-auto mb-4 w-40 h-40 rounded-full border-[3px] border-white overflow-hidden shadow-lg bg-white flex items-center justify-center">
-                                <img :src="cv.photo" class="w-full h-full object-cover">
-                            </div>
-                            <h1 class="text-2xl font-black text-white tracking-wide mt-2">{{ cv.name || 'Your Name' }}</h1>
-                            <p class="text-xs text-white/80 font-medium mt-1 tracking-wider uppercase">{{ cv.title || 'Your Title' }}</p>
-                        </div>
-
-                        <div class="w-full space-y-8 mt-4">
-                            <div class="w-full">
-                                <h2 class="text-sm font-bold text-white border-b border-white/30 pb-1 mb-4 uppercase tracking-wider">Contact</h2>
-                                <div class="space-y-3 text-[11px] text-white/90">
-                                    <div v-if="cv.email" class="flex items-start gap-3 break-all"><i class="fa-solid fa-envelope text-white/70 w-3 mt-0.5"></i> <span>{{ cv.email }}</span></div>
-                                    <div v-if="cv.phone" class="flex items-start gap-3"><i class="fa-solid fa-phone text-white/70 w-3 mt-0.5"></i> <span>{{ cv.phone }}</span></div>
-                                    <div v-if="cv.location" class="flex items-start gap-3 break-all"><i class="fa-solid fa-location-dot text-white/70 w-3 mt-0.5"></i> <span>{{ cv.location }}</span></div>
-                                    <div v-if="cv.website" class="flex items-start gap-3 break-all"><i class="fa-solid fa-globe text-white/70 w-3 mt-0.5"></i> <span>{{ cv.website }}</span></div>
-                                    <div v-if="cv.linkedin" class="flex items-start gap-3 break-all"><i class="fa-brands fa-linkedin text-white/70 w-3 mt-0.5"></i> <span>{{ cv.linkedin }}</span></div>
-                                    <div v-if="cv.github" class="flex items-start gap-3 break-all"><i class="fa-brands fa-github text-white/70 w-3 mt-0.5"></i> <span>{{ cv.github }}</span></div>
-                                </div>
-                            </div>
-
-                            <div class="w-full" v-if="cv.skills.length > 0">
-                                <h2 class="text-sm font-bold text-white border-b border-white/30 pb-1 mb-4 uppercase tracking-wider">Skills</h2>
-                                <div class="flex flex-wrap gap-2 text-[11px] text-white">
-                                    <span v-for="skill in cv.skills" :key="skill" class="bg-black/20 px-2 py-1 rounded">{{ skill }}</span>
-                                </div>
-                            </div>
-
-                            <div class="w-full" v-if="cv.languages.length > 0">
-                                <h2 class="text-sm font-bold text-white border-b border-white/30 pb-1 mb-4 uppercase tracking-wider">Languages</h2>
-                                <div class="space-y-2">
-                                    <div v-for="(lang, index) in cv.languages" :key="index" class="flex justify-between text-[11px] text-white border-b border-white/20 pb-1 last:border-0">
-                                        <span class="font-bold">{{ lang.language }}</span>
-                                        <span class="text-white/80">{{ lang.proficiency }}</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="w-[65%] py-12 px-10 flex flex-col gap-8">
-                        
-                        <section v-if="cv.summary">
-                            <h2 class="text-lg font-black text-[#324458] border-b-[2px] border-[#324458] pb-1 mb-3 uppercase tracking-wider">Profile</h2>
-                            <p class="text-xs text-slate-700 leading-relaxed text-justify">{{ cv.summary }}</p>
-                        </section>
-
-                        <section v-if="cv.experience.length > 0">
-                            <h2 class="text-lg font-black text-[#324458] border-b-[2px] border-[#324458] pb-1 mb-4 uppercase tracking-wider">Work Experience</h2>
-                            <div class="space-y-5">
-                                <div v-for="(job, index) in cv.experience" :key="index">
-                                    <div class="flex justify-between items-end mb-1">
-                                        <h3 class="font-bold text-sm text-[#324458] uppercase">{{ job.position }}</h3>
-                                        <span class="text-[10px] text-slate-500 font-bold whitespace-nowrap ml-2">{{ job.start }} - {{ job.end }}</span>
-                                    </div>
-                                    <div class="text-[11px] font-bold text-slate-500 mb-2 uppercase">{{ job.company }}</div>
-                                    <p class="text-xs text-slate-700 leading-relaxed whitespace-pre-line">{{ job.description }}</p>
-                                </div>
-                            </div>
-                        </section>
-
-                        <section v-if="cv.education.length > 0">
-                            <h2 class="text-lg font-black text-[#324458] border-b-[2px] border-[#324458] pb-1 mb-4 uppercase tracking-wider">Education</h2>
-                            <div class="space-y-4">
-                                <div v-for="(edu, index) in cv.education" :key="index">
-                                    <div class="flex justify-between items-end mb-1">
-                                        <h3 class="font-bold text-sm text-[#324458] uppercase">{{ edu.degree }}</h3>
-                                        <span class="text-[10px] text-slate-500 font-bold whitespace-nowrap ml-2">{{ edu.start }} - {{ edu.end }}</span>
-                                    </div>
-                                    <div class="text-[11px] font-bold text-slate-500 uppercase">{{ edu.institution }}</div>
-                                </div>
-                            </div>
-                        </section>
-
-                        <div v-if="cv.projects.length > 0 || cv.certifications.length > 0" class="grid grid-cols-2 gap-8 mt-auto pt-4">
-                            <section v-if="cv.projects.length > 0">
-                                <h2 class="text-sm font-black text-[#324458] border-b-[2px] border-[#324458] pb-1 mb-3 uppercase tracking-wider">Projects</h2>
-                                <div class="space-y-3">
-                                    <div v-for="(proj, index) in cv.projects" :key="index">
-                                        <div class="font-bold text-xs text-dark">{{ proj.name }}</div>
-                                        <div v-if="proj.link" class="text-[9px] text-brand-600">{{ proj.link }}</div>
-                                        <p class="text-[10px] text-slate-600 mt-0.5 leading-snug">{{ proj.description }}</p>
-                                    </div>
-                                </div>
-                            </section>
-                            
-                            <section v-if="cv.certifications.length > 0">
-                                <h2 class="text-sm font-black text-[#324458] border-b-[2px] border-[#324458] pb-1 mb-3 uppercase tracking-wider">Certifications</h2>
-                                <div class="space-y-2">
-                                    <div v-for="(cert, index) in cv.certifications" :key="index">
-                                        <div class="font-bold text-xs text-dark">{{ cert.name }}</div>
-                                        <div class="flex justify-between text-[9px] text-slate-500">
-                                            <span>{{ cert.issuer }}</span>
-                                            <span>{{ cert.year }}</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </section>
-                        </div>
-                    </div>
-                </div>
-
-            </div>
-                <div
-                    class="mt-auto pt-6 border-t border-slate-100 flex justify-between items-center text-[8px] text-slate-300 font-black uppercase tracking-widest italic">
-                    <p>Generated by CV Master</p>
-                    <div class="flex gap-1">
-                        <div class="w-8 h-1 bg-brand-600"></div>
-                        <div class="w-4 h-1 bg-dark"></div>
-                    </div>
-                </div>
-
             </div>
         </div>
     </div>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/3.3.4/vue.global.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/3.3.4/vue.global.prod.min.js"></script>
 
     <script src="app.js"></script>
 
