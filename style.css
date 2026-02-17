@@ -283,10 +283,10 @@ h4,
     body,
     html {
         background: white !important;
-        width: 210mm !important;
-        height: auto !important;
         margin: 0 !important;
         padding: 0 !important;
+        width: 210mm !important;
+        height: auto !important;
         overflow: visible !important;
         position: absolute !important;
         left: 0 !important;
@@ -305,25 +305,29 @@ h4,
         overflow: visible !important;
     }
 
-    /* Hide UI elements and Editor */
+    /* Precision Hide */
     .no-print,
     nav,
     .mobile-fab,
     .sidebar-container,
     .sidebar-tabs,
-    .px-6.pt-6,
-    [v-show*="!showPreview"],
+    .px-6,
     footer,
-    button {
+    button,
+    [v-show*="!showPreview"] {
         display: none !important;
+        width: 0 !important;
+        height: 0 !important;
+        overflow: hidden !important;
     }
 
-    /* Ensure Preview takes full A4 space from (0,0) */
+    /* Force Preview Align & Disable Scale */
     .a4-container,
-    [v-show*="showPreview"] {
+    [v-show*="showPreview"],
+    .flex-1.bg-slate-100 {
         display: block !important;
         width: 210mm !important;
-        min-height: 297mm !important;
+        height: auto !important;
         position: absolute !important;
         top: 0 !important;
         left: 0 !important;
@@ -332,6 +336,18 @@ h4,
         background: white !important;
         transform: none !important;
         overflow: visible !important;
+    }
+
+    /* CRITICAL: Heavy override for the inline VUE scaling on template-wrapper */
+    .template-wrapper {
+        transform: scale(1) !important;
+        width: 210mm !important;
+        height: 297mm !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        display: flex !important;
+        flex-direction: column !important;
+        transform-origin: top left !important;
     }
 
     .a4-page {
@@ -351,6 +367,8 @@ h4,
         box-shadow: none !important;
         border: none !important;
         width: 210mm !important;
+        height: 297mm !important;
+        position: relative !important;
     }
 }
 
