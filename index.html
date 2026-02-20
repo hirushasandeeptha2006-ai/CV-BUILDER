@@ -10,6 +10,8 @@
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
     <link rel="stylesheet" href="style.css">
 
     <script>
@@ -54,10 +56,10 @@
             </div>
         </div>
 
-        <div class="flex items-center gap-4">
+        <div class="flex items-center gap-3">
             <button onclick="window.print()"
                 class="bg-dark text-white px-5 py-2 rounded-lg font-bold text-sm hover:bg-brand-600 transition shadow-lg flex items-center gap-2">
-                <i class="fa-solid fa-download"></i> <span class="hidden sm:inline">Export PDF</span>
+                <i class="fa-solid fa-print"></i> <span class="hidden sm:inline">Print CV</span>
             </button>
         </div>
     </nav>
@@ -366,7 +368,6 @@
                         </button>
 
                         <!-- 4. Bold Modern (Dark) -->
-                        <!-- 4. Bold Modern (Dark) -->
                         <button @click="applyLayout('template-modern')"
                             class="group flex flex-col gap-2 transition-all">
                             <div class="aspect-[1/1.41] bg-white rounded-lg border-2 transition-all p-0 shadow-sm relative overflow-hidden group-hover:scale-[1.02] flex"
@@ -433,6 +434,54 @@
                             <span class="text-[10px] font-bold uppercase text-center tracking-wider"
                                 :class="currentTemplate === 'template-modern' ? 'text-dark' : 'text-slate-400'">Bold
                                 Modern</span>
+                        </button>
+
+                        <!-- 5. Executive Legacy (Slate & Gold) -->
+                        <button @click="applyLayout('template-executive')"
+                            class="group flex flex-col gap-2 transition-all">
+                            <div class="aspect-[1/1.41] bg-white rounded-lg border-2 transition-all p-0 shadow-sm relative overflow-hidden group-hover:scale-[1.02] flex flex-col"
+                                :class="currentTemplate === 'template-executive' ? 'border-amber-600 ring-2 ring-amber-100 shadow-md' : 'border-slate-100 hover:border-slate-300'">
+                                <!-- Header -->
+                                <div class="w-full bg-[#1e293b] h-10 flex items-center px-1.5 gap-2 shrink-0">
+                                    <div class="w-6 h-6 bg-slate-700 rounded-sm"></div>
+                                    <div class="flex-1">
+                                        <div class="text-[4px] font-bold text-white uppercase">John Executive</div>
+                                        <div class="text-[2px] font-bold text-amber-500 tracking-widest uppercase">
+                                            Global
+                                            Director</div>
+                                    </div>
+                                </div>
+                                <!-- Body -->
+                                <div class="p-2 flex gap-2 h-full overflow-hidden text-left">
+                                    <div class="flex-1 space-y-1">
+                                        <div class="h-1 w-8 bg-slate-200"></div>
+                                        <div class="space-y-0.5">
+                                            <div class="h-0.5 w-full bg-slate-100"></div>
+                                            <div class="h-0.5 w-full bg-slate-100"></div>
+                                        </div>
+                                        <div class="h-1 w-10 bg-slate-200"></div>
+                                        <div class="space-y-0.5">
+                                            <div class="h-0.5 w-full bg-slate-100"></div>
+                                            <div class="h-0.5 w-full bg-slate-100"></div>
+                                        </div>
+                                    </div>
+                                    <div class="w-1/4 space-y-1">
+                                        <div class="h-1 w-full bg-amber-100"></div>
+                                        <div class="h-4 w-full bg-slate-50 rounded"></div>
+                                    </div>
+                                </div>
+                                <!-- Check Overlay -->
+                                <div v-if="currentTemplate === 'template-executive'"
+                                    class="absolute inset-0 bg-amber-600/10 flex items-center justify-center">
+                                    <div
+                                        class="bg-amber-600 text-white w-8 h-8 rounded-full flex items-center justify-center shadow-lg transform scale-110">
+                                        <i class="fa-solid fa-check text-sm"></i>
+                                    </div>
+                                </div>
+                            </div>
+                            <span class="text-[10px] font-bold uppercase text-center tracking-wider"
+                                :class="currentTemplate === 'template-executive' ? 'text-amber-600' : 'text-slate-400'">Executive
+                                Legacy</span>
                         </button>
                     </div>
 
@@ -1653,14 +1702,156 @@
                             </div>
                         </div>
                     </div>
+
+                    <!-- 5. TEMPLATE EXECUTIVE (Slate & Gold) -->
+                    <div v-else-if="currentTemplate === 'template-executive'" class="flex-1 flex flex-col bg-white">
+                        <!-- Geometric Header -->
+                        <header class="bg-[#1e293b] text-white p-12 relative overflow-hidden shrink-0">
+                            <div class="absolute top-0 right-0 w-64 h-64 bg-slate-700/20 rounded-full -mr-20 -mt-20">
+                            </div>
+                            <div class="flex items-center gap-8 relative z-10">
+                                <img v-if="cv.photo" :src="cv.photo"
+                                    class="w-32 h-32 rounded-xl object-cover border-4 border-slate-700 shadow-2xl">
+                                <div class="flex-1">
+                                    <h1 class="text-4xl font-extrabold tracking-tight uppercase leading-none mb-2">
+                                        {{ cv.name || 'YOUR NAME' }}</h1>
+                                    <p class="text-amber-500 font-bold tracking-[0.2em] uppercase text-sm">
+                                        {{ cv.title || 'PROFESSIONAL TITLE' }}</p>
+                                    <div
+                                        class="flex flex-wrap gap-x-6 gap-y-1 mt-6 text-[11px] text-slate-400 font-bold uppercase tracking-wide">
+                                        <span v-if="cv.email"><i class="fa-solid fa-envelope mr-1.5 text-amber-500"></i>
+                                            {{ cv.email }}</span>
+                                        <span v-if="cv.phone"><i class="fa-solid fa-phone mr-1.5 text-amber-500"></i> {{
+                                            cv.phone }}</span>
+                                        <span v-if="cv.location"><i
+                                                class="fa-solid fa-location-dot mr-1.5 text-amber-500"></i> {{
+                                            cv.location
+                                            }}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </header>
+
+                        <div class="flex-1 p-12 grid grid-cols-12 gap-10 min-h-0 bg-white">
+                            <!-- Main Content -->
+                            <div class="col-span-8 space-y-10 min-w-0 text-left">
+                                <section v-if="cv.summary">
+                                    <h2
+                                        class="text-sm font-black text-slate-800 uppercase tracking-[0.3em] border-b-2 border-slate-100 pb-2 mb-4">
+                                        Profile</h2>
+                                    <p
+                                        class="text-[13px] leading-relaxed text-slate-600 font-medium break-words text-justify">
+                                        {{ cv.summary }}</p>
+                                </section>
+
+                                <section v-if="cv.experience.length">
+                                    <h2
+                                        class="text-sm font-black text-slate-800 uppercase tracking-[0.3em] border-b-2 border-slate-100 pb-2 mb-6">
+                                        Experience</h2>
+                                    <div class="space-y-8">
+                                        <div v-for="job in cv.experience" class="group">
+                                            <div class="flex justify-between items-start mb-1 gap-4">
+                                                <h3 class="font-bold text-dark text-base italic leading-none">{{
+                                                    job.company }}</h3>
+                                                <span
+                                                    class="text-[10px] font-black text-slate-400 uppercase tracking-widest whitespace-nowrap">{{
+                                                    job.start }} - {{ job.end }}</span>
+                                            </div>
+                                            <p
+                                                class="text-[11px] font-black text-amber-600 uppercase tracking-wider mb-2">
+                                                {{ job.position }}</p>
+                                            <p
+                                                class="text-[13px] text-slate-600 leading-relaxed break-words whitespace-pre-line">
+                                                {{ job.description }}</p>
+                                        </div>
+                                    </div>
+                                </section>
+
+                                <section v-if="cv.projects && cv.projects.length">
+                                    <h2
+                                        class="text-sm font-black text-slate-800 uppercase tracking-[0.3em] border-b-2 border-slate-100 pb-2 mb-6">
+                                        Projects</h2>
+                                    <div class="grid grid-cols-2 gap-4">
+                                        <div v-for="proj in cv.projects"
+                                            class="p-5 bg-slate-50 border border-slate-100 rounded-lg">
+                                            <h3 class="font-bold text-slate-800 text-sm uppercase mb-2 leading-tight">{{
+                                                proj.name }}</h3>
+                                            <p class="text-[11px] text-slate-500 leading-relaxed break-words">{{
+                                                proj.description }}</p>
+                                        </div>
+                                    </div>
+                                </section>
+                            </div>
+
+                            <!-- Sidebar -->
+                            <div class="col-span-4 space-y-10 min-w-0 text-left">
+                                <section v-if="cv.skills.length">
+                                    <h2
+                                        class="text-[11px] font-black text-slate-800 uppercase tracking-[0.2em] border-b-2 border-amber-500/20 pb-2 mb-5">
+                                        Expertise</h2>
+                                    <div class="flex flex-wrap gap-1.5">
+                                        <span v-for="skill in cv.skills"
+                                            class="bg-slate-800 text-white text-[9px] px-2.5 py-1.5 font-bold rounded-sm uppercase tracking-wider">
+                                            {{ skill }}
+                                        </span>
+                                    </div>
+                                </section>
+
+                                <section v-if="cv.education.length">
+                                    <h2
+                                        class="text-[11px] font-black text-slate-800 uppercase tracking-[0.2em] border-b-2 border-amber-500/20 pb-2 mb-5">
+                                        Education</h2>
+                                    <div v-for="edu in cv.education" class="mb-5 last:mb-0">
+                                        <p class="font-black text-slate-800 text-[11px] leading-tight uppercase mb-1">{{
+                                            edu.degree }}</p>
+                                        <p class="text-[10px] font-bold text-slate-500 uppercase tracking-tight mb-1">{{
+                                            edu.institution }}</p>
+                                        <p class="text-[9px] font-black text-amber-600 uppercase">{{ edu.start }} - {{
+                                            edu.end }}</p>
+                                    </div>
+                                </section>
+
+                                <section v-if="cv.languages.length">
+                                    <h2
+                                        class="text-[11px] font-black text-slate-800 uppercase tracking-[0.2em] border-b-2 border-amber-500/20 pb-2 mb-5">
+                                        Languages</h2>
+                                    <div v-for="lang in cv.languages" class="mb-4">
+                                        <div
+                                            class="flex justify-between text-[10px] font-black text-slate-700 uppercase tracking-wide mb-1.5">
+                                            <span>{{ lang.language }}</span>
+                                            <span class="text-amber-600">{{ lang.proficiency }}</span>
+                                        </div>
+                                        <div class="w-full h-1 bg-slate-100 rounded-full">
+                                            <div class="h-full bg-slate-800 rounded-full"
+                                                :style="{ width: lang.proficiency === 'Native' ? '100%' : lang.proficiency === 'Fluent' ? '90%' : '70%' }">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </section>
+
+                                <section v-if="cv.certifications && cv.certifications.length">
+                                    <h2
+                                        class="text-[11px] font-black text-slate-800 uppercase tracking-[0.2em] border-b-2 border-amber-500/20 pb-2 mb-5">
+                                        Awards</h2>
+                                    <div v-for="cert in cv.certifications" class="mb-4">
+                                        <p class="font-bold text-slate-800 text-[10px] uppercase leading-tight">{{
+                                            cert.name
+                                            }}</p>
+                                        <p class="text-[9px] font-bold text-slate-400 mt-1 uppercase">{{ cert.issuer }}
+                                            ({{
+                                            cert.year }})</p>
+                                    </div>
+                                </section>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/3.3.4/vue.global.prod.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/3.3.4/vue.global.prod.min.js"></script>
 
-    <script src="app.js"></script>
+        <script src="app.js"></script>
 
 </body>
 

@@ -67,7 +67,6 @@ createApp({
                     const btnWidth = activeBtn.offsetWidth;
                     const btnLeft = activeBtn.offsetLeft;
 
-                    // Center the button in the container
                     container.scrollTo({
                         left: btnLeft - (containerWidth / 2) + (btnWidth / 2),
                         behavior: 'smooth'
@@ -81,7 +80,7 @@ createApp({
                 this.$nextTick(() => {
                     setTimeout(() => {
                         this.autoShrink();
-                    }, 350); // Wait for transition
+                    }, 350);
                 });
             }
         },
@@ -99,16 +98,14 @@ createApp({
         applyLayout(template) {
             this.currentTemplate = template;
             this.showTemplateSelector = false;
-
-            // Apply Premium Presets
             const presets = {
                 'template-professional': '#2c3e50',
                 'template-elegant': '#5f9ea0',
                 'template-circular': '#3b82f6',
-                'template-modern': '#1a1a1a'
+                'template-modern': '#1a1a1a',
+                'template-executive': '#1e293b'
             };
             if (presets[template]) this.themeColor = presets[template];
-
             this.autoShrink();
         },
         updateSkills() {
@@ -128,26 +125,105 @@ createApp({
                 const wrapper = document.querySelector('.template-wrapper');
                 const container = document.querySelector('.a4-page');
                 if (!wrapper || !container) return;
-
-                // Reset scale to measure true height
-                // We set width explicitly to avoid width distortion on scale reset
                 this.cvScale = 1;
-
                 setTimeout(() => {
                     const contentHeight = wrapper.scrollHeight;
                     const containerHeight = container.clientHeight;
-
                     if (contentHeight > containerHeight) {
                         const scale = containerHeight / contentHeight;
-                        this.cvScale = Math.max(scale, 0.6); // Min scale 0.6
+                        this.cvScale = Math.max(scale, 0.6);
                     } else {
                         this.cvScale = 1;
                     }
                 }, 50);
             });
+        },
+        async downloadPDF(event) {
+            const element = document.querySelector('.a4-page');
+            if (!element) return;
+
+            const originalScale = this.cvScale;
+            this.cvScale = 1;
+
+            // Button Feedback
+            const btn = event?.target?.closest('button');
+            const originalHTML = btn ? btn.innerHTML : '';
+            if (btn) {
+                btn.disabled = true;
+                btn.innerHTML = '<i class="fa-solid fa-circle-notch animate-spin"></i> Processing...';
+            }
+
+            // Wait for scale reset to settle
+            await this.$nextTick();
+            await new Promise(r => setTimeout(r, 600));
+
+            const opt = {
+                margin: 0,
+                filename: `${this.cv.name ? this.cv.name.replace(/\s+/g, '_') : 'My'}_CV.pdf`,
+                image: { type: 'jpeg', quality: 1 },
+                html2canvas: {
+                    scale: 3,
+                    useCORS: true,
+                    logging: false,
+                    letterRendering: true,
+                    windowWidth: 794, // Standard A4 width in px at 96 DPI
+                    scrollY: 0,
+                    scrollX: 0,
+                    onclone: (clonedDoc) => {
+                        const clonedPage = clonedDoc.querySelector('.a4-page');
+                        const clonedWrapper = clonedDoc.querySelector('.template-wrapper');
+
+                        // CRITICAL: Move the page to the very top-left of the clone
+                        // This ignores any flex/grid/alignment logic from the original page
+                        if (clonedPage) {
+                            // Reset all parents to prevent offsets
+                            let parent = clonedPage.parentElement;
+                            while (parent && parent !== clonedDoc.body) {
+                                parent.style.margin = '0';
+                                parent.style.padding = '0';
+                                parent.style.display = 'block';
+                                parent.style.position = 'static';
+                                parent.style.transform = 'none';
+                                parent = parent.parentElement;
+                            }
+
+                            clonedPage.style.position = 'absolute';
+                            clonedPage.style.top = '0';
+                            clonedPage.style.left = '0';
+                            clonedPage.style.margin = '0';
+                            clonedPage.style.padding = '0';
+                            clonedPage.style.transform = 'none';
+                            clonedPage.style.boxShadow = 'none';
+                        }
+
+                        if (clonedWrapper) {
+                            clonedWrapper.style.transform = 'none';
+                            clonedWrapper.style.width = '210mm';
+                            clonedWrapper.style.height = '297mm';
+                            clonedWrapper.style.margin = '0';
+                            clonedWrapper.style.padding = '0';
+                        }
+                    }
+                },
+                jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+            };
+
+            try {
+                await html2pdf().set(opt).from(element).save();
+            } catch (err) {
+                console.error('PDF Export Error:', err);
+                alert('Export failed. Please try again.');
+            } finally {
+                this.cvScale = originalScale;
+                if (btn) {
+                    btn.disabled = false;
+                    btn.innerHTML = originalHTML;
+                }
+            }
         }
     },
     mounted() {
+        window.exportCVasPDF = (e) => this.downloadPDF(e);
         this.updateTheme();
         this.autoShrink();
         window.addEventListener('resize', () => {
@@ -157,8 +233,6 @@ createApp({
                 this.autoShrink();
             }
         });
-
-        // Horizontal scroll for tabs
         const tabsContainer = document.querySelector('.sidebar-tabs');
         if (tabsContainer) {
             tabsContainer.addEventListener('wheel', (e) => {
