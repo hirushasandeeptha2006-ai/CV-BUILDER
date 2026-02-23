@@ -10,52 +10,63 @@ createApp({
             currentTemplate: 'template-professional',
             showTemplateSelector: false,
             cvScale: 1,
-            skillsInput: 'React, Vue.js, Node.js, TypeScript, Tailwind CSS',
+            _shrinkTimer: null,
+            skillsInput: 'HTML, CSS, JavaScript, Vue.js, Node.js, PHP, MySQL, Git',
             cv: {
                 photo: null,
-                name: 'JOHN DOE',
-                title: 'Software Engineer',
-                summary: 'Experienced software engineer with a strong background in developing scalable web applications and working with cross-functional teams to deliver high-quality software solutions.',
-                email: 'john.doe@example.com',
+                name: 'ALEXANDER HAMILTON',
+                title: 'Full Stack Web Developer & UI/UX Designer',
+                summary: 'Highly motivated and detail-oriented Full Stack Developer with over 5 years of experience in building robust web applications. Expert in modern JavaScript frameworks like Vue.js and React, with a deep understanding of backend systems using Node.js and Python. Passionate about creating seamless user experiences and optimizing application performance.',
+                email: 'alexander.hamilton@example.com',
                 phone: '+1 234 567 890',
-                location: 'New York, USA',
-                linkedin: 'linkedin.com/in/johndoe',
-                github: 'github.com/johndoe',
-                website: 'johndoe.com',
+                location: 'San Francisco, CA',
+                linkedin: 'linkedin.com/in/alexanderhamilton',
+                github: 'github.com/alexanderhamilton',
+                website: 'alexander.dev',
                 experience: [
-                    { company: 'Tech Corp Inc.', position: 'Senior Developer', start: '2020', end: 'Present', description: 'Led the development of a cloud-based SaaS platform used by over 50k users.' },
-                    { company: 'WebStudio', position: 'Junior Developer', start: '2018', end: '2020', description: 'Collaborated with designers to implement responsive user interfaces.' }
+                    {
+                        company: 'Innovative Solutions PLC',
+                        position: 'Senior Lead Developer',
+                        start: '2021',
+                        end: 'Present',
+                        description: 'Architected and implemented a high-traffic e-commerce platform handling over 100k daily active users. Optimized database queries reducing load times by 40%. Led a team of 12 developers using Agile methodologies.'
+                    },
+                    {
+                        company: 'Creative Tech Studio',
+                        position: 'Full Stack Developer',
+                        start: '2019',
+                        end: '2021',
+                        description: 'Developed custom CRM solutions for international clients using Vue.js and Express. Integrated multiple third-party APIs including Stripe and Twilio.'
+                    }
                 ],
                 education: [
-                    { institution: 'State University', degree: 'BSc in Computer Science', start: '2014', end: '2018' }
+                    { institution: 'University of Moratuwa', degree: 'BSc (Hons) in Information Technology', start: '2013', end: '2017' }
                 ],
                 projects: [
-                    { name: 'E-commerce Dashboard', description: 'A comprehensive dashboard for managing online store inventory and sales analytics.' }
+                    {
+                        name: 'AI-Powered Portfolio Builder',
+                        description: 'A revolutionary platform that uses machine learning to suggest the best CV templates and content based on a user\'s LinkedIn profile data.'
+                    }
                 ],
                 certifications: [
-                    { name: 'Certified Cloud Practitioner', issuer: 'AWS', year: '2022' }
+                    { name: 'AWS Certified Solutions Architect', issuer: 'Amazon Web Services', year: '2023' }
                 ],
-                skills: ['JavaScript', 'React', 'Node.js', 'Python', 'SQL'],
+                skills: ['JavaScript (ES6+)', 'Vue.js', 'React.js', 'Node.js', 'Python', 'Tailwind CSS', 'SQL', 'MongoDB', 'AWS', 'Docker', 'Git', 'UI/UX Design'],
                 languages: [
-                    { language: 'English', proficiency: 'Native' },
-                    { language: 'Spanish', proficiency: 'Intermediate' }
+                    { language: 'English', proficiency: 'Fluent' },
+                    { language: 'Sinhala', proficiency: 'Native' }
                 ]
             }
         }
     },
     watch: {
-        themeColor() {
-            this.updateTheme();
-        },
-        activeTab() {
-            this.scrollToActiveTab();
-        },
+        themeColor() { this.updateTheme(); },
+        activeTab() { this.scrollToActiveTab(); },
         cv: {
-            handler() {
-                this.autoShrink();
-            },
+            handler() { this.debouncedAutoShrink(); },
             deep: true
-        }
+        },
+        currentTemplate() { this.debouncedAutoShrink(); }
     },
     methods: {
         scrollToActiveTab() {
@@ -66,7 +77,6 @@ createApp({
                     const containerWidth = container.offsetWidth;
                     const btnWidth = activeBtn.offsetWidth;
                     const btnLeft = activeBtn.offsetLeft;
-
                     container.scrollTo({
                         left: btnLeft - (containerWidth / 2) + (btnWidth / 2),
                         behavior: 'smooth'
@@ -74,16 +84,16 @@ createApp({
                 }
             });
         },
+
         toggleMobileView() {
             this.showPreview = !this.showPreview;
             if (this.showPreview) {
                 this.$nextTick(() => {
-                    setTimeout(() => {
-                        this.autoShrink();
-                    }, 350);
+                    setTimeout(() => { this.autoShrink(); }, 400);
                 });
             }
         },
+
         handleImageUpload(event) {
             const file = event.target.files[0];
             if (file) {
@@ -95,6 +105,7 @@ createApp({
                 reader.readAsDataURL(file);
             }
         },
+
         applyLayout(template) {
             this.currentTemplate = template;
             this.showTemplateSelector = false;
@@ -106,110 +117,84 @@ createApp({
                 'template-executive': '#1e293b'
             };
             if (presets[template]) this.themeColor = presets[template];
-            this.autoShrink();
+            this.$nextTick(() => {
+                setTimeout(() => { this.autoShrink(); }, 100);
+            });
         },
+
         updateSkills() {
-            this.cv.skills = this.skillsInput
-                .split(',')
-                .map(s => s.trim())
-                .filter(s => s !== '');
+            this.cv.skills = this.skillsInput.split(',').map(s => s.trim()).filter(s => s !== '');
             this.autoShrink();
         },
+
         updateTheme() {
             const root = document.documentElement;
             root.style.setProperty('--primary', this.themeColor);
             root.style.setProperty('--primary-light', this.themeColor + '20');
         },
+
+        debouncedAutoShrink() {
+            if (this._shrinkTimer) clearTimeout(this._shrinkTimer);
+            this._shrinkTimer = setTimeout(() => {
+                this.autoShrink();
+            }, 120);
+        },
+
         autoShrink() {
             this.$nextTick(() => {
-                const wrapper = document.querySelector('.template-wrapper');
-                const container = document.querySelector('.a4-page');
-                if (!wrapper || !container) return;
-                this.cvScale = 1;
                 setTimeout(() => {
-                    const contentHeight = wrapper.scrollHeight;
-                    const containerHeight = container.clientHeight;
-                    if (contentHeight > containerHeight) {
-                        const scale = containerHeight / contentHeight;
-                        this.cvScale = Math.max(scale, 0.6);
-                    } else {
-                        this.cvScale = 1;
-                    }
-                }, 50);
+                    const wrapper = document.querySelector('.template-wrapper');
+                    if (!wrapper) return;
+
+                    const targetH = 1122; // A4 height at 96 DPI
+                    this.cvScale = 1;
+
+                    setTimeout(() => {
+                        const originalStyle = wrapper.getAttribute('style') || '';
+                        wrapper.style.setProperty('height', 'auto', 'important');
+                        wrapper.style.setProperty('min-height', '0', 'important');
+                        wrapper.style.setProperty('max-height', 'none', 'important');
+
+                        const realHeight = wrapper.scrollHeight || wrapper.offsetHeight;
+                        wrapper.setAttribute('style', originalStyle);
+
+                        if (realHeight > targetH + 5) {
+                            const scale = targetH / realHeight;
+                            this.cvScale = Math.max(scale, 0.35);
+                        } else {
+                            this.cvScale = 1;
+                        }
+                    }, 50);
+                }, 100);
             });
         },
+
         async downloadPDF(event) {
-            const element = document.querySelector('.a4-page');
+            const element = document.getElementById('cv-page');
             if (!element) return;
 
-            const originalScale = this.cvScale;
-            this.cvScale = 1;
-
-            // Button Feedback
             const btn = event?.target?.closest('button');
             const originalHTML = btn ? btn.innerHTML : '';
             if (btn) {
                 btn.disabled = true;
-                btn.innerHTML = '<i class="fa-solid fa-circle-notch animate-spin"></i> Processing...';
+                btn.innerHTML = '<i class="fa-solid fa-circle-notch animate-spin"></i> Generating PDF...';
             }
 
-            // Wait for scale reset to settle
+            const originalScale = this.cvScale;
+            this.cvScale = 1;
             await this.$nextTick();
-            await new Promise(r => setTimeout(r, 600));
+            await new Promise(r => setTimeout(r, 100));
 
-            const opt = {
+            const options = {
                 margin: 0,
-                filename: `${this.cv.name ? this.cv.name.replace(/\s+/g, '_') : 'My'}_CV.pdf`,
+                filename: `${this.cv.name ? this.cv.name.replace(/\s+/g, '_') : 'my'}_cv.pdf`,
                 image: { type: 'jpeg', quality: 1 },
-                html2canvas: {
-                    scale: 3,
-                    useCORS: true,
-                    logging: false,
-                    letterRendering: true,
-                    windowWidth: 794, // Standard A4 width in px at 96 DPI
-                    scrollY: 0,
-                    scrollX: 0,
-                    onclone: (clonedDoc) => {
-                        const clonedPage = clonedDoc.querySelector('.a4-page');
-                        const clonedWrapper = clonedDoc.querySelector('.template-wrapper');
-
-                        // CRITICAL: Move the page to the very top-left of the clone
-                        // This ignores any flex/grid/alignment logic from the original page
-                        if (clonedPage) {
-                            // Reset all parents to prevent offsets
-                            let parent = clonedPage.parentElement;
-                            while (parent && parent !== clonedDoc.body) {
-                                parent.style.margin = '0';
-                                parent.style.padding = '0';
-                                parent.style.display = 'block';
-                                parent.style.position = 'static';
-                                parent.style.transform = 'none';
-                                parent = parent.parentElement;
-                            }
-
-                            clonedPage.style.position = 'absolute';
-                            clonedPage.style.top = '0';
-                            clonedPage.style.left = '0';
-                            clonedPage.style.margin = '0';
-                            clonedPage.style.padding = '0';
-                            clonedPage.style.transform = 'none';
-                            clonedPage.style.boxShadow = 'none';
-                        }
-
-                        if (clonedWrapper) {
-                            clonedWrapper.style.transform = 'none';
-                            clonedWrapper.style.width = '210mm';
-                            clonedWrapper.style.height = '297mm';
-                            clonedWrapper.style.margin = '0';
-                            clonedWrapper.style.padding = '0';
-                        }
-                    }
-                },
+                html2canvas: { scale: 3, useCORS: true, logging: false },
                 jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
             };
 
             try {
-                await html2pdf().set(opt).from(element).save();
+                await html2pdf().set(options).from(element).save();
             } catch (err) {
                 console.error('PDF Export Error:', err);
                 alert('Export failed. Please try again.');
@@ -220,19 +205,44 @@ createApp({
                     btn.innerHTML = originalHTML;
                 }
             }
+        },
+
+        debounce(func, delay) {
+            let timeout;
+            return function (...args) {
+                const context = this;
+                clearTimeout(timeout);
+                timeout = setTimeout(() => func.apply(context, args), delay);
+            };
         }
     },
+
+    computed: {
+        wrapperStyle() {
+            const s = this.cvScale;
+            if (s >= 1) return { transform: 'scale(1)', width: '100%', transformOrigin: 'top left' };
+            const invertedW = (1 / s) * 100;
+            return {
+                transform: `scale(${s})`,
+                width: `${invertedW}%`,
+                transformOrigin: 'top left'
+            };
+        }
+    },
+
     mounted() {
         window.exportCVasPDF = (e) => this.downloadPDF(e);
         this.updateTheme();
-        this.autoShrink();
+
+        this.debouncedAutoShrink = this.debounce(() => { this.autoShrink(); }, 300);
+        setTimeout(() => { this.autoShrink(); }, 300);
+
         window.addEventListener('resize', () => {
             this.isMobile = window.innerWidth < 768;
-            if (!this.isMobile) {
-                this.showPreview = false;
-                this.autoShrink();
-            }
+            if (!this.isMobile) this.showPreview = false;
+            this.debouncedAutoShrink();
         });
+
         const tabsContainer = document.querySelector('.sidebar-tabs');
         if (tabsContainer) {
             tabsContainer.addEventListener('wheel', (e) => {
@@ -242,5 +252,88 @@ createApp({
                 }
             });
         }
+
+        const prepareForPrint = () => {
+            const editorPane = document.querySelector('#app > div > div:first-child');
+            if (editorPane) {
+                editorPane.setAttribute('data-print-hidden', 'true');
+                editorPane.style.setProperty('display', 'none', 'important');
+            }
+            const a4Container = document.querySelector('.a4-container');
+            if (a4Container) {
+                a4Container.setAttribute('data-print-expanded', 'true');
+                a4Container.style.setProperty('width', '210mm', 'important');
+                a4Container.style.setProperty('height', '297mm', 'important');
+                a4Container.style.setProperty('padding', '0', 'important');
+                a4Container.style.setProperty('margin', '0', 'important');
+                a4Container.style.setProperty('overflow', 'hidden', 'important');
+                a4Container.style.setProperty('display', 'block', 'important');
+                a4Container.style.setProperty('position', 'absolute', 'important');
+                a4Container.style.setProperty('top', '0', 'important');
+                a4Container.style.setProperty('left', '0', 'important');
+                a4Container.style.setProperty('transform', 'none', 'important');
+            }
+            const wrapper = document.querySelector('.template-wrapper');
+            if (wrapper) {
+                wrapper.setAttribute('data-print-scale', wrapper.style.transform || '');
+                wrapper.setAttribute('data-print-width', wrapper.style.width || '');
+                wrapper.style.setProperty('transform', 'none', 'important');
+                wrapper.style.setProperty('width', '210mm', 'important');
+                wrapper.style.setProperty('height', '297mm', 'important');
+                wrapper.style.setProperty('position', 'absolute', 'important');
+                wrapper.style.setProperty('top', '0', 'important');
+                wrapper.style.setProperty('left', '0', 'important');
+                wrapper.style.setProperty('overflow', 'hidden', 'important');
+            }
+            const a4Page = document.querySelector('.a4-page');
+            if (a4Page) {
+                a4Page.setAttribute('data-print-transform', a4Page.style.transform || '');
+                a4Page.style.setProperty('transform', 'none', 'important');
+                a4Page.style.setProperty('left', '0', 'important');
+                a4Page.style.setProperty('top', '0', 'important');
+                a4Page.style.setProperty('margin', '0', 'important');
+                a4Page.style.setProperty('width', '210mm', 'important');
+                a4Page.style.setProperty('height', '297mm', 'important');
+                a4Page.style.setProperty('position', 'absolute', 'important');
+            }
+        };
+
+        const restoreAfterPrint = () => {
+            const editorPane = document.querySelector('[data-print-hidden="true"]');
+            if (editorPane) {
+                editorPane.removeAttribute('data-print-hidden');
+                editorPane.style.removeProperty('display');
+            }
+            const a4Container = document.querySelector('[data-print-expanded="true"]');
+            if (a4Container) {
+                a4Container.removeAttribute('data-print-expanded');
+                ['width', 'height', 'padding', 'margin', 'overflow', 'display', 'position', 'top', 'left', 'transform'].forEach(p => a4Container.style.removeProperty(p));
+            }
+            const wrapper = document.querySelector('.template-wrapper');
+            if (wrapper) {
+                const savedT = wrapper.getAttribute('data-print-scale');
+                const savedW = wrapper.getAttribute('data-print-width');
+                wrapper.removeAttribute('data-print-scale');
+                wrapper.removeAttribute('data-print-width');
+                ['transform', 'width', 'height', 'position', 'top', 'left', 'overflow'].forEach(p => wrapper.style.removeProperty(p));
+                if (savedT) wrapper.style.transform = savedT;
+                if (savedW) wrapper.style.width = savedW;
+            }
+            const a4Page = document.querySelector('.a4-page');
+            if (a4Page) {
+                a4Page.removeAttribute('data-print-transform');
+                ['transform', 'left', 'top', 'margin', 'width', 'height', 'position'].forEach(p => a4Page.style.removeProperty(p));
+            }
+            setTimeout(() => { this.autoShrink(); }, 200);
+        };
+
+        window.addEventListener('beforeprint', prepareForPrint);
+        window.addEventListener('afterprint', restoreAfterPrint);
+
+        const originalPrint = window.print.bind(window);
+        window.print = () => {
+            prepareForPrint();
+            setTimeout(() => { originalPrint(); }, 100);
+        };
     }
 }).mount('#app');

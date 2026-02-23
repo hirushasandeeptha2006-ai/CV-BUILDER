@@ -205,19 +205,31 @@ h4,
     outline: none;
 }
 
-/* A4 Page Preview */
+/* A4 Page Preview - Updated based on user instructions */
+#cv-page,
 .a4-page {
     width: 210mm;
-    min-width: 210mm;
-    height: 297mm;
+    /* A4 Width */
     min-height: 297mm;
+    /* A4 Height */
+    margin: 0 auto;
     background: white;
-    margin: 2rem auto;
-    box-shadow: 0 10px 40px -15px rgba(0, 0, 0, 0.2);
+    padding: 0;
+    /* Removing fixed padding to let templates handle internal spacing */
+    box-sizing: border-box;
+    font-family: 'Inter', Arial, sans-serif;
     position: relative;
+    box-shadow: 0 10px 40px -15px rgba(0, 0, 0, 0.2);
     overflow: hidden;
     transform-origin: top center;
     transition: transform 0.3s ease;
+    flex-shrink: 0;
+}
+
+/* Print කරන වෙලාවට පිටුව කැඩෙන එක වළක්වන්න */
+.cv-section {
+    page-break-inside: avoid;
+    margin-bottom: 10px;
 }
 
 .a4-page.dragging {
@@ -268,79 +280,156 @@ h4,
 }
 
 @media print {
+
+    /* ── 1. PAGE SETUP ── */
     @page {
-        margin: 0;
-        size: A4 portrait;
+        size: 210mm 297mm portrait;
+        margin: 0mm;
     }
 
-    * {
+    /* ── 2. COLOUR ACCURACY ── force backgrounds & colours to print ── */
+    *,
+    *::before,
+    *::after {
         -webkit-print-color-adjust: exact !important;
         print-color-adjust: exact !important;
-        box-sizing: border-box !important;
-        margin: 0;
-        padding: 0;
     }
 
-    /* Hide UI components */
+    /* ── 3. HIDE ENTIRE UI ── */
     nav,
     .no-print,
-    .sidebar-container,
-    .sidebar-tabs,
     .mobile-fab,
+    .sidebar-tabs,
     button,
-    footer {
+    footer,
+    /* the editor / left panel */
+    body>#app>div:first-child,
+    /* any element with v-show that is the editor pane */
+    [class*="md:w-[480px]"],
+    [class*="w-full md:w-\\[480px\\]"] {
         display: none !important;
+        visibility: hidden !important;
+        width: 0 !important;
+        height: 0 !important;
+        overflow: hidden !important;
+        position: absolute !important;
+        pointer-events: none !important;
     }
 
-    /* Total Reset for Print Context */
-    html,
-    body,
-    #app,
+    /* ── 4. RESET ROOT ELEMENTS ── */
+    html {
+        width: 210mm !important;
+        height: 297mm !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        overflow: hidden !important;
+        background: white !important;
+    }
+
+    body {
+        width: 210mm !important;
+        height: 297mm !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        overflow: hidden !important;
+        background: white !important;
+        display: block !important;
+        min-height: unset !important;
+    }
+
+    #app {
+        display: block !important;
+        width: 210mm !important;
+        height: 297mm !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        overflow: hidden !important;
+        position: relative !important;
+        transform: none !important;
+    }
+
+    /* ── 5. A4 CONTAINER (the right preview pane) ── */
     .a4-container {
         display: block !important;
         width: 210mm !important;
         height: 297mm !important;
         margin: 0 !important;
         padding: 0 !important;
+        overflow: hidden !important;
         position: absolute !important;
         top: 0 !important;
         left: 0 !important;
-        right: 0 !important;
-        bottom: 0 !important;
-        transform: none !important;
         background: white !important;
-        overflow: hidden !important;
+        transform: none !important;
+        gap: 0 !important;
+        align-items: unset !important;
+        justify-content: unset !important;
+        flex-direction: unset !important;
     }
 
-    /* Page specific reset */
+    /* ── 6. A4 PAGE (the white paper element) ── */
     .a4-page,
     #cv-preview {
         width: 210mm !important;
         height: 297mm !important;
+        min-width: 210mm !important;
+        min-height: 297mm !important;
+        max-width: 210mm !important;
+        max-height: 297mm !important;
         position: absolute !important;
         top: 0 !important;
         left: 0 !important;
         margin: 0 !important;
         padding: 0 !important;
+        /* Cancel any CSS media-query scale (0.65 / 0.45) */
         transform: none !important;
+        transform-origin: top left !important;
         border: none !important;
         box-shadow: none !important;
+        border-radius: 0 !important;
+        overflow: hidden !important;
         display: block !important;
+        background: white !important;
     }
 
-    /* Override Vue dynamic scaling */
+    /* ── 7. TEMPLATE WRAPPER ── reset Vue dynamic scale ── */
     .template-wrapper {
         width: 210mm !important;
         height: 297mm !important;
-        transform: scale(1) !important;
+        min-width: 210mm !important;
+        min-height: 297mm !important;
+        /* Kill any JS-applied transform */
+        transform: none !important;
         transform-origin: top left !important;
         display: flex !important;
         flex-direction: column !important;
         position: absolute !important;
         top: 0 !important;
         left: 0 !important;
+        overflow: hidden !important;
+    }
+
+    /* ── 8. TEMPLATE INNER SECTIONS ── keep template padding intact ── */
+    .template-wrapper>* {
+        flex-shrink: 0;
+    }
+
+    /* ── 9. All template sections fill space correctly ── */
+    .template-wrapper .flex-1 {
+        flex: 1 1 auto !important;
+    }
+
+    /* Template full-height sections */
+    .template-wrapper .h-full {
+        height: 100% !important;
+    }
+
+    /* Ignore any no-print overlays inside the CV */
+    .template-wrapper .no-print {
+        display: none !important;
     }
 }
+
 
 /* =========================================
    PREMIUM TEMPLATE STYLES
@@ -366,13 +455,42 @@ h4,
 .template-wrapper {
     overflow-wrap: anywhere;
     word-wrap: break-word;
-    word-break: normal;
-    white-space: pre-wrap;
+    word-break: break-word;
+    overflow: visible;
+    transform-origin: top left;
+    position: relative;
 }
 
 .template-wrapper * {
     max-width: 100%;
+    box-sizing: border-box;
+    min-width: 0;
 }
+
+/* Prevent any text from breaking out of its container */
+.template-wrapper p,
+.template-wrapper span,
+.template-wrapper h1,
+.template-wrapper h2,
+.template-wrapper h3,
+.template-wrapper li {
+    overflow-wrap: anywhere;
+    word-break: break-word;
+    hyphens: auto;
+}
+
+/* Smooth scale transition */
+.template-wrapper {
+    transition: transform 0.15s ease-out;
+}
+
+/* Preserve newlines in description fields only */
+.template-wrapper .whitespace-pre-line {
+    white-space: pre-line;
+    word-break: break-word;
+    overflow-wrap: anywhere;
+}
+
 
 .template-elegant {
     background: white;
@@ -395,8 +513,8 @@ h4,
 
 /* 4. Circular (Sidebar with Curve) */
 .template-circular {
-    background: linear-gradient(to right, #e3f2fd 30%, white 30.1%);
-    /* Light blue sidebar */
+    background: linear-gradient(to right, #e3f2fd 34%, white 34%) !important;
+    /* Light blue sidebar spanning full height */
 }
 
 .template-circular header {
@@ -412,7 +530,7 @@ h4,
 
 /* 5. Modern Lateral (Dark Sidebar) */
 .template-modern {
-    background: transparent;
+    background: linear-gradient(to right, #1a1a1a 35%, white 35%) !important;
 }
 
 .template-modern header {
